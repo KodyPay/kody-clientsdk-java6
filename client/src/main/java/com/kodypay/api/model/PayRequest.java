@@ -2,8 +2,6 @@ package com.kodypay.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 /**
  * PayRequest
  */
@@ -64,7 +62,10 @@ public class PayRequest {
 
   @Override
   public int hashCode() {
-    return Objects.hash(amount, showTips);
+    int result = 17;
+    result = 31 * result + (this.amount == null ? 0: this.amount.hashCode());
+    result = 31 * result + (this.showTips == null ? 0: this.showTips.hashCode());
+    return result;
   }
 
 

@@ -2,7 +2,6 @@ package com.kodypay.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
 
 /**
  * Terminal
@@ -64,7 +63,10 @@ public class Terminal {
 
   @Override
   public int hashCode() {
-    return Objects.hash(terminalId, online);
+    int result = 17;
+    result = 31 * result + (this.terminalId == null ? 0: this.terminalId.hashCode());
+    result = 31 * result + (this.online == null ? 0: this.online.hashCode());
+    return result;
   }
 
 

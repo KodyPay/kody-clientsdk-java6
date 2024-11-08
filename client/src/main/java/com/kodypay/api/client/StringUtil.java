@@ -1,4 +1,4 @@
-package com.kodypay.api;
+package com.kodypay.api.client;
 
 public class StringUtil {
   /**

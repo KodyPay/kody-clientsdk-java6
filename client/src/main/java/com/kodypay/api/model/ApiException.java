@@ -1,4 +1,4 @@
-package com.kodypay.api;
+package com.kodypay.api.model;
 
 import java.util.List;
 import java.util.Map;

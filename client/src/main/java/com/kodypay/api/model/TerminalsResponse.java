@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * TerminalsResponse
@@ -53,7 +52,9 @@ public class TerminalsResponse {
 
   @Override
   public int hashCode() {
-    return Objects.hash(terminals);
+    int result = 17;
+    result = 31 * result + (this.terminals == null ? 0: this.terminals.hashCode());
+    return result;
   }
 
 

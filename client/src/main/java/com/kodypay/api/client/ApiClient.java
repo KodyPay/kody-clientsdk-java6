@@ -1,7 +1,10 @@
-package com.kodypay.api;
+package com.kodypay.api.client;
 
 import com.kodypay.api.auth.ApiKeyAuth;
 import com.kodypay.api.auth.Authentication;
+import com.kodypay.api.model.ApiException;
+import com.kodypay.api.model.ApiResponse;
+import com.kodypay.api.model.Pair;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
@@ -19,18 +22,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ApiClient {
   protected Map<String, String> defaultHeaderMap = new HashMap<String, String>();
@@ -492,69 +488,9 @@ public class ApiClient {
     if ("byte[]".equals(returnType.toString())) {
       // Handle binary response (byte array).
       return (T) response.readEntity(byte[].class);
-    } else if (returnType.getRawType() == File.class) {
-      // Handle file downloading.
-      T file = (T) downloadFileFromResponse(response);
-      return file;
     }
-
-    String contentType = null;
-    List<Object> contentTypes = response.getHeaders().get("Content-Type");
-    if (contentTypes != null && !contentTypes.isEmpty())
-      contentType = String.valueOf(contentTypes.get(0));
 
     return response.readEntity(returnType);
-  }
-
-  /**
-   * Download file from the given response.
-   * @param response Response
-   * @return File
-   * @throws ApiException If fail to read file content from response and write to disk
-   */
-  public File downloadFileFromResponse(Response response) throws ApiException {
-    try {
-      File file = prepareDownloadFile(response);
-      Files.copy(response.readEntity(InputStream.class), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
-      return file;
-    } catch (IOException e) {
-      throw new ApiException(e);
-    }
-  }
-
-  public File prepareDownloadFile(Response response) throws IOException {
-    String filename = null;
-    String contentDisposition = (String) response.getHeaders().getFirst("Content-Disposition");
-    if (contentDisposition != null && !"".equals(contentDisposition)) {
-      // Get filename from the Content-Disposition header.
-      Pattern pattern = Pattern.compile("filename=['\"]?([^'\"\\s]+)['\"]?");
-      Matcher matcher = pattern.matcher(contentDisposition);
-      if (matcher.find())
-        filename = matcher.group(1);
-    }
-
-    String prefix;
-    String suffix = null;
-    if (filename == null) {
-      prefix = "download-";
-      suffix = "";
-    } else {
-      int pos = filename.lastIndexOf('.');
-      if (pos == -1) {
-        prefix = filename + "-";
-      } else {
-        prefix = filename.substring(0, pos) + "-";
-        suffix = filename.substring(pos);
-      }
-      // File.createTempFile requires the prefix to be at least three characters long
-      if (prefix.length() < 3)
-        prefix = "download-";
-    }
-
-    if (tempFolderPath == null)
-      return Files.createTempFile(prefix, suffix).toFile();
-    else
-      return Files.createTempFile(Paths.get(tempFolderPath), prefix, suffix).toFile();
   }
 
   /**
@@ -658,7 +594,9 @@ public class ApiClient {
       }
     } finally {
       try {
-        response.close();
+        if (response != null) {
+          response.close();
+        }
       } catch (Exception e) {
         // it's not critical, since the response object is local in method invokeAPI; that's fine, just continue
       }
@@ -682,12 +620,7 @@ public class ApiClient {
       // Set logger to ALL
       java.util.logging.Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).setLevel(java.util.logging.Level.ALL);
     }
-    performAdditionalClientConfiguration(clientConfig);
     return ClientBuilder.newClient(clientConfig);
-  }
-
-  protected void performAdditionalClientConfiguration(ClientConfig clientConfig) {
-    // No-op extension point
   }
 
   protected Map<String, List<String>> buildResponseHeaders(Response response) {

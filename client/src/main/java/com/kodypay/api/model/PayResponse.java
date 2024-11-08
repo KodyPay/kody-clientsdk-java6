@@ -3,7 +3,7 @@ package com.kodypay.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.threeten.bp.OffsetDateTime;
 
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * PayResponse
@@ -16,7 +16,7 @@ public class PayResponse {
   private String failureReason = null;
 
   @JsonProperty("receiptJson")
-  private String receiptJson = null;
+  private Map<String, Object> receiptJson = null;
 
   @JsonProperty("orderId")
   private String orderId = null;
@@ -73,7 +73,7 @@ public class PayResponse {
     this.failureReason = failureReason;
   }
 
-  public PayResponse receiptJson(String receiptJson) {
+  public PayResponse receiptJson(Map<String, Object> receiptJson) {
     this.receiptJson = receiptJson;
     return this;
   }
@@ -82,11 +82,11 @@ public class PayResponse {
    * Get receiptJson
    * @return receiptJson
   **/
-  public String getReceiptJson() {
+  public Map<String, Object> getReceiptJson() {
     return receiptJson;
   }
 
-  public void setReceiptJson(String receiptJson) {
+  public void setReceiptJson(Map<String, Object> receiptJson) {
     this.receiptJson = receiptJson;
   }
 
@@ -218,22 +218,33 @@ public class PayResponse {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PayResponse payResponse = (PayResponse) o;
-    return Objects.equals(this.status, payResponse.status) &&
-        Objects.equals(this.failureReason, payResponse.failureReason) &&
-        Objects.equals(this.receiptJson, payResponse.receiptJson) &&
-        Objects.equals(this.orderId, payResponse.orderId) &&
-        Objects.equals(this.dateCreated, payResponse.dateCreated) &&
-        Objects.equals(this.extPaymentRef, payResponse.extPaymentRef) &&
-        Objects.equals(this.datePaid, payResponse.datePaid) &&
-        Objects.equals(this.totalAmount, payResponse.totalAmount) &&
-        Objects.equals(this.saleAmount, payResponse.saleAmount) &&
-        Objects.equals(this.tipsAmount, payResponse.tipsAmount);
+    PayResponse that = (PayResponse) o;
+    return Objects.equals(this.status, that.status) &&
+            Objects.equals(this.failureReason, that.failureReason) &&
+            Objects.equals(this.receiptJson, that.receiptJson) &&
+            Objects.equals(this.orderId, that.orderId) &&
+            Objects.equals(this.dateCreated, that.dateCreated) &&
+            Objects.equals(this.extPaymentRef, that.extPaymentRef) &&
+            Objects.equals(this.datePaid, that.datePaid) &&
+            Objects.equals(this.totalAmount, that.totalAmount) &&
+            Objects.equals(this.saleAmount, that.saleAmount) &&
+            Objects.equals(this.tipsAmount, that.tipsAmount);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(status, failureReason, receiptJson, orderId, dateCreated, extPaymentRef, datePaid, totalAmount, saleAmount, tipsAmount);
+    int result = 17;
+    result = 31 * result + (status != null ? status.hashCode() : 0);
+    result = 31 * result + (failureReason != null ? failureReason.hashCode() : 0);
+    result = 31 * result + (receiptJson != null ? receiptJson.hashCode() : 0);
+    result = 31 * result + (orderId != null ? orderId.hashCode() : 0);
+    result = 31 * result + (dateCreated != null ? dateCreated.hashCode() : 0);
+    result = 31 * result + (extPaymentRef != null ? extPaymentRef.hashCode() : 0);
+    result = 31 * result + (datePaid != null ? datePaid.hashCode() : 0);
+    result = 31 * result + (totalAmount != null ? totalAmount.hashCode() : 0);
+    result = 31 * result + (saleAmount != null ? saleAmount.hashCode() : 0);
+    result = 31 * result + (tipsAmount != null ? tipsAmount.hashCode() : 0);
+    return result;
   }
 
 

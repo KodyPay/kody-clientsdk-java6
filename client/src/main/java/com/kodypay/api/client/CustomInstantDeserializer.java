@@ -1,4 +1,4 @@
-package com.kodypay.api;
+package com.kodypay.api.client;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonTokenId;

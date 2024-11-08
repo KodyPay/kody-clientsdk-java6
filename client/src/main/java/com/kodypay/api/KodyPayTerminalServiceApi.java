@@ -2,6 +2,7 @@ package com.kodypay.api;
 
 import javax.ws.rs.core.GenericType;
 
+import com.kodypay.api.client.*;
 import com.kodypay.api.model.*;
 
 import java.util.ArrayList;
@@ -10,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class KodyPayTerminalServiceApi {
-  private ApiClient apiClient;
+  private final ApiClient apiClient;
 
   public KodyPayTerminalServiceApi() {
-    this(Configuration.getDefaultApiClient());
+    apiClient = new ApiClient();
   }
 
   public KodyPayTerminalServiceApi(ApiClient apiClient) {
@@ -22,10 +23,6 @@ public class KodyPayTerminalServiceApi {
 
   public ApiClient getApiClient() {
     return apiClient;
-  }
-
-  public void setApiClient(ApiClient apiClient) {
-    this.apiClient = apiClient;
   }
 
   /**

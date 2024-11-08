@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Ignore;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -41,16 +43,20 @@ public class KodyPayTerminalServiceApiIT {
 
     @Test
     public void kodyPayTerminalServicePayTest() throws ApiException, InterruptedException {
+        BigDecimal amount = new BigDecimal("1");
+        String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
+        assertEquals("1.00", amountStr);
+
         PayRequest pay = new PayRequest()
-                .amount("1.11")
+                .amount(amountStr)
                 .showTips(false);
         PayResponse payResponse = api.kodyPayTerminalServicePay(storeId, terminalId, pay);
 
         assertNotNull(payResponse);
         System.out.println(payResponse);
+        String orderId = payResponse.getOrderId();
 
         if (payResponse.getStatus() == PaymentStatus.PENDING) {
-            String orderId = payResponse.getOrderId();
             for (int i = 0; i < 10; i++) {
                 System.out.println("Waiting for payment to complete..." + orderId);
                 Thread.sleep(2000);
@@ -63,6 +69,12 @@ public class KodyPayTerminalServiceApiIT {
                 }
             }
         }
+        System.out.println("Getting final payment details..." + orderId);
+        Thread.sleep(5000);
+        PayResponse detailsResponse = api.kodyPayTerminalServicePaymentDetails(storeId, orderId);
+
+        assertNotNull(detailsResponse);
+        System.out.println(detailsResponse);
     }
 
     @Test
@@ -94,6 +106,12 @@ public class KodyPayTerminalServiceApiIT {
             assertNotNull(detailsResponse);
             System.out.println(detailsResponse);
         }
+        System.out.println("Getting final payment details..." + orderId);
+        Thread.sleep(5000);
+        PayResponse detailsResponse = api.kodyPayTerminalServicePaymentDetails(storeId, orderId);
+
+        assertNotNull(detailsResponse);
+        System.out.println(detailsResponse);
     }
 
 }
