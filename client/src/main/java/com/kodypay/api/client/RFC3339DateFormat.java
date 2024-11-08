@@ -1,4 +1,4 @@
-package com.kodypay.api;
+package com.kodypay.api.client;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;

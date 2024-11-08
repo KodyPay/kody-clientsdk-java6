@@ -1,6 +1,6 @@
 package com.kodypay.api.auth;
 
-import com.kodypay.api.Pair;
+import com.kodypay.api.model.Pair;
 
 import java.util.Map;
 import java.util.List;

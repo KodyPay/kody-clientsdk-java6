@@ -11,10 +11,10 @@
     <packaging>jar</packaging>
 
     <properties>
-        <swagger-core-version>1.5.24</swagger-core-version>
-        <jersey-version>2.29.1</jersey-version>
-        <jackson-version>2.6.4</jackson-version>
-        <maven-plugin-version>1.0.0</maven-plugin-version>
+        <jersey-version>2.25.1</jersey-version>
+        <jackson-core-version>2.7.9</jackson-core-version>
+        <jackson-databind-version>2.7.9.7</jackson-databind-version>
+        <jackson-threetenbp-version>2.6.4</jackson-threetenbp-version>
         <junit-version>4.13.1</junit-version>
     </properties>
 
@@ -89,37 +89,33 @@
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>${jersey-version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-            <version>${jersey-version}</version>
-        </dependency>
         <!-- JSON processing: jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson-version}</version>
+            <version>${jackson-core-version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson-version}</version>
+            <version>${jackson-core-version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson-version}</version>
+            <version>${jackson-databind-version}</version>
         </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.joschi.jackson</groupId>
-                <artifactId>jackson-datatype-threetenbp</artifactId>
-                <version>${jackson-version}</version>
-            </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-core-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.joschi.jackson</groupId>
+            <artifactId>jackson-datatype-threetenbp</artifactId>
+            <version>${jackson-threetenbp-version}</version>
+        </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>

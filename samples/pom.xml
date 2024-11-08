@@ -11,4 +11,12 @@
 
     <artifactId>samples</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.kodypay.api</groupId>
+            <artifactId>client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

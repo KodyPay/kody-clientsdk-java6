@@ -1,4 +1,4 @@
-package com.kodypay.api;
+package com.kodypay.api.model;
 
 public class Pair {
     private String name = "";

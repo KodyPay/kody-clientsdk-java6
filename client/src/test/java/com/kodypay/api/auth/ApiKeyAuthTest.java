@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 
-import com.kodypay.api.Pair;
+import com.kodypay.api.model.Pair;
 import org.junit.*;
 import static org.junit.Assert.*;
 

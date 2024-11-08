@@ -2,7 +2,6 @@ package com.kodypay.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
 
 /**
  * CancelRequest
@@ -64,7 +63,10 @@ public class CancelRequest {
 
   @Override
   public int hashCode() {
-    return Objects.hash(amount, orderId);
+    int result = 17;
+    result = 31 * result + (this.amount == null ? 0: this.amount.hashCode());
+    result = 31 * result + (this.orderId == null ? 0: this.orderId.hashCode());
+    return result;
   }
 
 
