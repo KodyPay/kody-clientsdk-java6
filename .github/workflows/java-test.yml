@@ -27,7 +27,7 @@ jobs:
       - run: mkdir staging && cp client/target/*.jar staging
       - uses: actions/upload-artifact@v4
         with:
-          name: Package
+          name: kody-clientsdk-java6.jar
           path: |
             staging/*.jar
-            !staging/*-sources.jar
+            !staging/original-*.jar

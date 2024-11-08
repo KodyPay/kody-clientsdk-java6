@@ -4,10 +4,10 @@
 
     <parent>
         <groupId>com.kodypay.api</groupId>
-        <artifactId>kody-clientsdk-java6</artifactId>
+        <artifactId>kody-clientsdk-java6-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>client</artifactId>
+    <artifactId>kody-clientsdk-java6</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -19,6 +19,7 @@
     </properties>
 
     <build>
+        <finalName>kody-clientsdk-java6</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -36,36 +37,26 @@
                     <forkMode>pertest</forkMode>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
+                        <id>shade</id>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
