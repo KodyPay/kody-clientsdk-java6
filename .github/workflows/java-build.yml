@@ -1,0 +1,98 @@
+name: Java SDK Build & Release JDK8
+
+on:
+  repository_dispatch:
+    types: [tag-push]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'source tag'
+        required: true
+        type: string
+env:
+  GITHUB_ACTOR: ${{ github.actor }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_REPOSITORY: ${{ github.repository }}
+jobs:
+  tagging:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set_tag.outputs.tag }}
+      version: ${{ steps.set_tag.outputs.version }}
+    steps:
+      - name: Use the tag from the event
+        id: set_tag
+        run: |
+          TAG="${{ inputs.tag || github.event.client_payload.tag }}"
+          VERSION=${TAG#v}
+          echo "TAG from event: ${TAG}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+  publish:
+    needs:
+      - tagging
+    runs-on: ubuntu-latest
+    outputs:
+      artifact: ${{ steps.artifact-upload-step.outputs.artifact-url }}
+    env:
+      MAVEN_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_PROJECT_mavenCentralUsername }}
+      MAVEN_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_PROJECT_mavenCentralPassword }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Create settings.xml
+        run: |
+          cat > $HOME/.m2/settings.xml <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+              <servers>
+                  <server>
+                      <id>central</id>
+                      <username>${{ secrets.MAVEN_PROJECT_mavenCentralUsername }}</username>
+                      <password>${{ secrets.MAVEN_PROJECT_mavenCentralPassword }}</password>
+                  </server>
+              </servers>
+          </settings>
+          EOF
+      - name: Build with Maven
+        run: mvn -B verify --file pom.xml
+      - name: Setup git config
+        run: |
+          echo "Setting up Git user information"
+          git config --global user.name "${{github.actor}}"
+          git config --global user.email "<>"
+      - name: Set version
+        run: mvn -B versions:set -DnewVersion=${{ needs.tagging.outputs.version }} -DgenerateBackupPoms=false
+      - name: Publish release
+        run: mvn -B deploy --settings $HOME/.m2/settings.xml
+      - run: mkdir staging && cp client/target/*.jar staging
+      - name: Upload artifact
+        id: artifact-upload-step
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: kody-clientsdk-java6.jar
+          path: |
+            staging/*.jar
+            !staging/original-*.jar
+
+  release:
+    needs:
+      - tagging
+      - publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          name: "${{ needs.tagging.outputs.tag }}"
+          tag: "${{ needs.tagging.outputs.tag }}"
+          omitBody: true
+          draft: false
+          makeLatest: true
+          artifacts: ${{ needs.publish.outputs.artifact }}

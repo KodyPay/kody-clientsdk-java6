@@ -9,7 +9,33 @@
     </parent>
     <artifactId>kody-clientsdk-java6</artifactId>
     <packaging>jar</packaging>
+    <name>Kody Java6 Client SDK</name>
+    <description>Kody Java6 REST Client SDK</description>
+    <url>https://kody.com</url>
 
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://github.com/KodyPay/kody-clientsdk-java6/blob/main/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>kodypay</id>
+            <name>Kody</name>
+            <email>tech@kody.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/KodyPay/kody-clientsdk-java6.git</connection>
+        <developerConnection>scm:git:https://github.com/KodyPay/kody-clientsdk-java6.git</developerConnection>
+        <url>https://github.com/KodyPay/kody-clientsdk-java6</url>
+    </scm>
+
+    <!-- Note: these versions are compatible with JDK6 -->
     <properties>
         <jersey-version>2.25.1</jersey-version>
         <jackson-core-version>2.7.9</jackson-core-version>
@@ -19,23 +45,11 @@
     </properties>
 
     <build>
-        <finalName>kody-clientsdk-java6</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12</version>
-                <configuration>
-                    <systemProperties>
-                        <property>
-                            <name>loggerPath</name>
-                            <value>conf/log4j.properties</value>
-                        </property>
-                    </systemProperties>
-                    <argLine>-Xms512m -Xmx1500m</argLine>
-                    <parallel>methods</parallel>
-                    <forkMode>pertest</forkMode>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -52,6 +66,7 @@
                     <execution>
                         <id>shade</id>
                         <goals><goal>shade</goal></goals>
+                        <phase>package</phase>
                         <configuration>
                             <useDependencyReducedPomInJar>true</useDependencyReducedPomInJar>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
@@ -73,11 +88,20 @@
                         </goals>
                         <configuration>
                             <updatePomFile>true</updatePomFile>
-                            <flattenMode>fatjar</flattenMode>
+                            <flattenMode>ossrh</flattenMode>
                             <flattenedPomFilename>dependency-reduced-pom.xml</flattenedPomFilename>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.6.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
             </plugin>
         </plugins>
     </build>
