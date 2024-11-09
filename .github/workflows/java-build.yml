@@ -19,7 +19,6 @@ jobs:
     outputs:
       tag: ${{ steps.set_tag.outputs.tag }}
       version: ${{ steps.set_tag.outputs.version }}
-      prerelease: ${{ steps.set_tag.outputs.prerelease }}
     steps:
       - name: Use the tag from the event
         id: set_tag
@@ -29,12 +28,6 @@ jobs:
           echo "TAG from event: ${TAG}"
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          if [[ "${TAG}" == *-* ]]; then 
-            echo "prerelease=true" >> $GITHUB_OUTPUT
-          else 
-            echo "prerelease=false" >> $GITHUB_OUTPUT
-          fi
-
 
   publish:
     needs:
@@ -45,9 +38,6 @@ jobs:
     env:
       MAVEN_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_PROJECT_mavenCentralUsername }}
       MAVEN_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_PROJECT_mavenCentralPassword }}
-      MAVEN_PROJECT_signingInMemoryKeyId: ${{ secrets.MAVEN_PROJECT_signingInMemoryKeyId }}
-      MAVEN_PROJECT_signingInMemoryKeyPassword: ${{ secrets.MAVEN_PROJECT_signingInMemoryKeyPassword }}
-      MAVEN_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 8
@@ -55,10 +45,6 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}" | base64 --decode | gpg --import
-          echo "${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}" | base64 --decode | gpg --import --passphrase-fd 0
       - name: Create settings.xml
         run: |
           cat > $HOME/.m2/settings.xml <<EOF
@@ -67,23 +53,11 @@ jobs:
                     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
               <servers>
                   <server>
-                      <id>ossrh</id>
+                      <id>central</id>
                       <username>${{ secrets.MAVEN_PROJECT_mavenCentralUsername }}</username>
                       <password>${{ secrets.MAVEN_PROJECT_mavenCentralPassword }}</password>
                   </server>
               </servers>
-              <profiles>
-                  <profile>
-                      <id>ossrh</id>
-                      <properties>
-                          <gpg.executable>gpg</gpg.executable>
-                          <gpg.passphrase>${{ secrets.MAVEN_PROJECT_signingInMemoryKeyPassword }}</gpg.passphrase>
-                      </properties>
-                  </profile>
-              </profiles>
-              <activeProfiles>
-                  <activeProfile>ossrh</activeProfile>
-              </activeProfiles>
           </settings>
           EOF
       - name: Build with Maven
@@ -93,12 +67,10 @@ jobs:
           echo "Setting up Git user information"
           git config --global user.name "${{github.actor}}"
           git config --global user.email "<>"
-      - name: Sanity check
-        run: |
-          echo "This is a prerelease: ${{ needs.tagging.outputs.prerelease }}"
+      - name: Set version
+        run: mvn -B versions:set -DnewVersion=${{ needs.tagging.outputs.version }} -DgenerateBackupPoms=false
       - name: Publish release
-        if: ${{ needs.tagging.outputs.prerelease == 'false' }}
-        run: mvn -B deploy -Prelease.version=${{ needs.tagging.outputs.version }} -P ossrh --settings $HOME/.m2/settings.xml
+        run: mvn -B deploy --settings $HOME/.m2/settings.xml
       - run: mkdir staging && cp client/target/*.jar staging
       - name: Upload artifact
         id: artifact-upload-step
@@ -122,6 +94,5 @@ jobs:
           tag: "${{ needs.tagging.outputs.tag }}"
           omitBody: true
           draft: false
-          prerelease: ${{ needs.tagging.outputs.prerelease == 'true' }}
-          makeLatest: ${{ needs.tagging.outputs.prerelease == 'false' }}
+          makeLatest: true
           artifacts: ${{ needs.publish.outputs.artifact }}
