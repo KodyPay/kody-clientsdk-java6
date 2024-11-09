@@ -70,7 +70,7 @@ jobs:
       - name: Set version
         run: mvn -B versions:set -DnewVersion=${{ needs.tagging.outputs.version }} -DgenerateBackupPoms=false
       - name: Publish release
-        run: mvn -B deploy --settings $HOME/.m2/settings.xml
+        run: mvn -B deploy --file client/pom.xml --settings $HOME/.m2/settings.xml
       - run: mkdir staging && cp client/target/*.jar staging
       - name: Upload artifact
         id: artifact-upload-step
