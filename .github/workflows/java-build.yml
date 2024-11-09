@@ -38,6 +38,8 @@ jobs:
     env:
       MAVEN_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_PROJECT_mavenCentralUsername }}
       MAVEN_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_PROJECT_mavenCentralPassword }}
+      MAVEN_PROJECT_signingInMemoryKeyPassphrase: ${{ secrets.MAVEN_PROJECT_signingInMemoryKeyPassphrase }}
+      MAVEN_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 8
@@ -45,6 +47,10 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}" | base64 --decode | gpg --import
+          echo "${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}" | base64 --decode | gpg --import --passphrase "${MAVEN_PROJECT_signingInMemoryKeyPassphrase}"
       - name: Create settings.xml
         run: |
           cat > $HOME/.m2/settings.xml <<EOF
@@ -58,6 +64,18 @@ jobs:
                       <password>${{ secrets.MAVEN_PROJECT_mavenCentralPassword }}</password>
                   </server>
               </servers>
+              <profiles>
+                <profile>
+                  <id>release</id>
+                  <activation>
+                    <activeByDefault>true</activeByDefault>
+                  </activation>
+                  <properties>
+                    <gpg.executable>gpg</gpg.executable>
+                    <gpg.passphrase>${{ secrets.MAVEN_PROJECT_signingInMemoryKeyPassphrase }}</gpg.passphrase>
+                  </properties>
+                </profile>
+              </profiles>
           </settings>
           EOF
       - name: Build with Maven
@@ -70,7 +88,7 @@ jobs:
       - name: Set version
         run: mvn -B versions:set -DnewVersion=${{ needs.tagging.outputs.version }} -DgenerateBackupPoms=false
       - name: Publish release
-        run: mvn -B deploy --file client/pom.xml --settings $HOME/.m2/settings.xml
+        run: mvn -B deploy -Prelease --file client/pom.xml --settings $HOME/.m2/settings.xml
       - run: mkdir staging && cp client/target/*.jar staging
       - name: Upload artifact
         id: artifact-upload-step
