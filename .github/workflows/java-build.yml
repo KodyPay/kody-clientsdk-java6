@@ -47,38 +47,12 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}" | base64 --decode | gpg --import
-        env:
-          GPG_SIGNING_KEY: ${{ secrets.MAVEN_PROJECT_signingInMemoryKeyPassphrase }}
-      - name: Create settings.xml
-        run: |
-          cat > $HOME/.m2/settings.xml <<EOF
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-              <servers>
-                  <server>
-                      <id>central</id>
-                      <username>${{ secrets.MAVEN_PROJECT_mavenCentralUsername }}</username>
-                      <password>${{ secrets.MAVEN_PROJECT_mavenCentralPassword }}</password>
-                  </server>
-              </servers>
-              <profiles>
-                <profile>
-                  <id>release</id>
-                  <activation>
-                    <activeByDefault>true</activeByDefault>
-                  </activation>
-                  <properties>
-                    <gpg.executable>gpg</gpg.executable>
-                    <gpg.passphrase>${{ secrets.MAVEN_PROJECT_signingInMemoryKeyPassphrase }}</gpg.passphrase>
-                  </properties>
-                </profile>
-              </profiles>
-          </settings>
-          EOF
+          cache: 'maven'
+          server-id: central
+          server-username: MAVEN_PROJECT_mavenCentralUsername
+          server-password: MAVEN_PROJECT_mavenCentralPassword
+          gpg-passphrase: MAVEN_PROJECT_signingInMemoryKeyPassphrase
+          gpg-private-key: ${{ secrets.MAVEN_PROJECT_signingInMemoryKey }}
       - name: Build with Maven
         run: mvn -B verify --file pom.xml
       - name: Setup git config
