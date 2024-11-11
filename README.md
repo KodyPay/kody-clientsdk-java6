@@ -246,6 +246,17 @@ PayResponse response = api.paymentDetails(storeId, orderId);
 ### Cancel Terminal Payment
 
 #### CancelRequest - Cancel Payment Request
+```java
+public class CancelRequest {
+    private String amount = null;
+    private String orderId = null;
+}
+
+String storeId = "UUID of assigned store";
+String terminalId = "Terminal serial number";
+CancelResponse response = api.cancel(storeId, terminalId, cancel);
+```
+
 The cancel payment request requires the following parameters:
 
 - `storeId` - the ID of your assigned store
