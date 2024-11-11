@@ -99,7 +99,7 @@ The Kody Payments API Terminal service has the following methods:
 - [Cancel terminal payment](#cancel-terminal-payment): `KodyPayTerminalService.cancel` - cancel an active terminal payment
 - [Get Payment Details](#get-terminal-payment-details) `KodyPayTerminalService.paymentDetails` - get the payment details
 
-Follow the links of these methods to see the sample code and the data specification.
+Follow the links for these methods to see the sample code and the data specification.
 
 ## API data reference and Demo code
 
