@@ -83,12 +83,12 @@ Note: it is recommended that you store the `API_KEY` in a secured storage, and i
 
 ## Payments API Reference
 
-Kody supports the following channels to accept payments via API.
+Kody supports the following channels to accept payments via API (using the Java 6 library).
 
 1. [**Terminal**](#terminal---in-person-payments) - In-person payments
 
 Each of these channels have their own collection of services that are available as method calls on the client library:
-- `KodyPayTerminalServiceApi`
+- `KodyPayTerminalService`
 
 ### Terminal - In-person payments
 
