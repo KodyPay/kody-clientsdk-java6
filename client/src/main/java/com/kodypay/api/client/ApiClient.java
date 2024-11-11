@@ -37,7 +37,6 @@ public class ApiClient {
 
   protected Client httpClient;
   protected JSON json;
-  protected String tempFolderPath = null;
 
   protected Map<String, Authentication> authentications;
 
@@ -106,11 +105,11 @@ public class ApiClient {
    * Helper method to set API key value for the first API key authentication.
    * @param apiKey API key
    */
-  public void setApiKey(String apiKey) {
+  public ApiClient setApiKey(String apiKey) {
     for (Authentication auth : authentications.values()) {
       if (auth instanceof ApiKeyAuth) {
         ((ApiKeyAuth) auth).setApiKey(apiKey);
-        return;
+        return this;
       }
     }
     throw new RuntimeException("No API key authentication configured!");
@@ -170,27 +169,6 @@ public class ApiClient {
     this.debugging = debugging;
     // Rebuild HTTP Client according to the new "debugging" value.
     this.httpClient = buildHttpClient(debugging);
-    return this;
-  }
-
-  /**
-   * The path of temporary folder used to store downloaded files from endpoints
-   * with file response. The default value is <code>null</code>, i.e. using
-   * the system's default tempopary folder.
-   *
-   * @return Temp folder path
-   */
-  public String getTempFolderPath() {
-    return tempFolderPath;
-  }
-
-  /**
-   * Set temp folder path
-   * @param tempFolderPath Temp folder path
-   * @return API client
-   */
-  public ApiClient setTempFolderPath(String tempFolderPath) {
-    this.tempFolderPath = tempFolderPath;
     return this;
   }
 

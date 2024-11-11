@@ -9,8 +9,8 @@
     </parent>
     <artifactId>kody-clientsdk-java6</artifactId>
     <packaging>jar</packaging>
-    <name>Kody Java6 Client SDK</name>
-    <description>Kody Java6 REST Client SDK</description>
+    <name>Kody Java6 Client</name>
+    <description>Kody Java6 Client</description>
     <url>https://github.com/KodyPay/kody-clientsdk-java6</url>
     <inceptionYear>2024</inceptionYear>
 

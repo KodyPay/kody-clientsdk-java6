@@ -1,24 +1,28 @@
 package com.kodypay.api;
 
-import javax.ws.rs.core.GenericType;
-
-import com.kodypay.api.client.*;
+import com.kodypay.api.client.ApiClient;
 import com.kodypay.api.model.*;
 
+import javax.ws.rs.core.GenericType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class KodyPayTerminalServiceApi {
+/**
+ * KodyPayTerminalService provides methods to interact with the KodyPay API for handling terminal-related operations.
+ */
+public class KodyPayTerminalService {
   private final ApiClient apiClient;
 
-  public KodyPayTerminalServiceApi() {
+  public KodyPayTerminalService() {
     apiClient = new ApiClient();
   }
 
-  public KodyPayTerminalServiceApi(ApiClient apiClient) {
-    this.apiClient = apiClient;
+  public KodyPayTerminalService(String basePath, String apiKey) {
+    apiClient = new ApiClient()
+            .setBasePath(basePath)
+            .setApiKey(apiKey);
   }
 
   public ApiClient getApiClient() {
@@ -26,30 +30,19 @@ public class KodyPayTerminalServiceApi {
   }
 
   /**
-   * 
+   * Cancel a payment.
    * 
    * @param storeId UUID of store (required)
    * @param terminalId to identify the terminal where the payment was sent (required)
-   * @param body  (required)
-   * @return V1CancelResponse
+   * @param body cancel request (required)
+   * @return CancelResponse
    * @throws ApiException if fails to make API call
    */
-  public CancelResponse kodyPayTerminalServiceCancel(String storeId, String terminalId, CancelRequest body) throws ApiException {
+  public CancelResponse cancel(String storeId, String terminalId, CancelRequest body) throws ApiException {
     return kodyPayTerminalServiceCancelWithHttpInfo(storeId, terminalId, body).getData();
   }
 
-  /**
-   * 
-   * 
-   * @param storeId UUID of store (required)
-   * @param terminalId to identify the terminal where the payment was sent (required)
-   * @param body  (required)
-   * @return ApiResponse&lt;V1CancelResponse&gt;
-   * @throws ApiException if fails to make API call
-   */
-  public ApiResponse<CancelResponse> kodyPayTerminalServiceCancelWithHttpInfo(String storeId, String terminalId, CancelRequest body) throws ApiException {
-    Object localVarPostBody = body;
-    
+  ApiResponse<CancelResponse> kodyPayTerminalServiceCancelWithHttpInfo(String storeId, String terminalId, CancelRequest body) throws ApiException {
     // verify the required parameter 'storeId' is set
     if (storeId == null) {
       throw new ApiException(400, "Missing the required parameter 'storeId' when calling kodyPayTerminalServiceCancel");
@@ -75,50 +68,28 @@ public class KodyPayTerminalServiceApi {
     Map<String, String> localVarHeaderParams = new HashMap<String, String>();
     Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
-
-    
-    
-    final String[] localVarAccepts = {
-      "application/json"
-    };
-    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-
-    final String[] localVarContentTypes = {
-      "application/json"
-    };
-    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-
-    String[] localVarAuthNames = new String[] { "x_api_key" };
+    final String localVarAccept = apiClient.selectHeaderAccept(new String[] { "application/json" });
+    final String localVarContentType = apiClient.selectHeaderContentType(new String[] { "application/json" });
+    final String[] localVarAuthNames = { "x_api_key" };
 
     GenericType<CancelResponse> localVarReturnType = new GenericType<CancelResponse>() {};
-    return apiClient.invokeAPI(localVarPath, "PATCH", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+    return apiClient.invokeAPI(localVarPath, "PATCH", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
 
   /**
-   * 
+   * Create a payment.
    * 
    * @param storeId UUID of store (required)
    * @param terminalId send the payment to this terminal serial number (required)
-   * @param body  (required)
+   * @param body payment request (required)
    * @return PayResponse
    * @throws ApiException if fails to make API call
    */
-  public PayResponse kodyPayTerminalServicePay(String storeId, String terminalId, PayRequest body) throws ApiException {
+  public PayResponse pay(String storeId, String terminalId, PayRequest body) throws ApiException {
     return kodyPayTerminalServicePayWithHttpInfo(storeId, terminalId, body).getData();
   }
 
-  /**
-   * 
-   * 
-   * @param storeId UUID of store (required)
-   * @param terminalId send the payment to this terminal serial number (required)
-   * @param body  (required)
-   * @return ApiResponse&lt;PayResponse&gt;
-   * @throws ApiException if fails to make API call
-   */
-  public ApiResponse<PayResponse> kodyPayTerminalServicePayWithHttpInfo(String storeId, String terminalId, PayRequest body) throws ApiException {
-    Object localVarPostBody = body;
-    
+  ApiResponse<PayResponse> kodyPayTerminalServicePayWithHttpInfo(String storeId, String terminalId, PayRequest body) throws ApiException {
     // verify the required parameter 'storeId' is set
     if (storeId == null) {
       throw new ApiException(400, "Missing the required parameter 'storeId' when calling kodyPayTerminalServicePay");
@@ -144,48 +115,27 @@ public class KodyPayTerminalServiceApi {
     Map<String, String> localVarHeaderParams = new HashMap<String, String>();
     Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
-
-    
-    
-    final String[] localVarAccepts = {
-      "application/json"
-    };
-    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-
-    final String[] localVarContentTypes = {
-      "application/json"
-    };
-    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-
-    String[] localVarAuthNames = new String[] { "x_api_key" };
+    final String localVarAccept = apiClient.selectHeaderAccept(new String[] { "application/json" });
+    final String localVarContentType = apiClient.selectHeaderContentType(new String[] { "application/json" });
+    final String[] localVarAuthNames = { "x_api_key" };
 
     GenericType<PayResponse> localVarReturnType = new GenericType<PayResponse>() {};
-    return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+    return apiClient.invokeAPI(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
 
   /**
-   * 
+   * Get payment details.
    * 
    * @param storeId UUID of store (required)
    * @param orderId to identify the payment (order) (required)
-   * @return V1PayResponse
+   * @return PayResponse
    * @throws ApiException if fails to make API call
    */
-  public PayResponse kodyPayTerminalServicePaymentDetails(String storeId, String orderId) throws ApiException {
+  public PayResponse paymentDetails(String storeId, String orderId) throws ApiException {
     return kodyPayTerminalServicePaymentDetailsWithHttpInfo(storeId, orderId).getData();
   }
 
-  /**
-   * 
-   * 
-   * @param storeId UUID of store (required)
-   * @param orderId to identify the payment (order) (required)
-   * @return ApiResponse&lt;V1PayResponse&gt;
-   * @throws ApiException if fails to make API call
-   */
-  public ApiResponse<PayResponse> kodyPayTerminalServicePaymentDetailsWithHttpInfo(String storeId, String orderId) throws ApiException {
-    Object localVarPostBody = null;
-    
+  ApiResponse<PayResponse> kodyPayTerminalServicePaymentDetailsWithHttpInfo(String storeId, String orderId) throws ApiException {
     // verify the required parameter 'storeId' is set
     if (storeId == null) {
       throw new ApiException(400, "Missing the required parameter 'storeId' when calling kodyPayTerminalServicePaymentDetails");
@@ -206,46 +156,26 @@ public class KodyPayTerminalServiceApi {
     Map<String, String> localVarHeaderParams = new HashMap<String, String>();
     Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
-
-    
-    
-    final String[] localVarAccepts = {
-      "application/json"
-    };
-    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-
-    final String[] localVarContentTypes = {
-      "application/json"
-    };
-    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-
-    String[] localVarAuthNames = new String[] { "x_api_key" };
+    final String localVarAccept = apiClient.selectHeaderAccept(new String[] { "application/json" });
+    final String localVarContentType = apiClient.selectHeaderContentType(new String[] { "application/json" });
+    final String[] localVarAuthNames = { "x_api_key" };
 
     GenericType<PayResponse> localVarReturnType = new GenericType<PayResponse>() {};
-    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
 
   /**
-   * 
+   * Get list of terminals.
    * 
    * @param storeId UUID of store (required)
-   * @return V1TerminalsResponse
+   * @return TerminalsResponse
    * @throws ApiException if fails to make API call
    */
-  public TerminalsResponse kodyPayTerminalServiceTerminals(String storeId) throws ApiException {
+  public TerminalsResponse terminals(String storeId) throws ApiException {
     return kodyPayTerminalServiceTerminalsWithHttpInfo(storeId).getData();
   }
 
-  /**
-   * 
-   * 
-   * @param storeId UUID of store (required)
-   * @return ApiResponse&lt;V1TerminalsResponse&gt;
-   * @throws ApiException if fails to make API call
-   */
-  public ApiResponse<TerminalsResponse> kodyPayTerminalServiceTerminalsWithHttpInfo(String storeId) throws ApiException {
-    Object localVarPostBody = null;
-    
+  ApiResponse<TerminalsResponse> kodyPayTerminalServiceTerminalsWithHttpInfo(String storeId) throws ApiException {
     // verify the required parameter 'storeId' is set
     if (storeId == null) {
       throw new ApiException(400, "Missing the required parameter 'storeId' when calling kodyPayTerminalServiceTerminals");
@@ -253,29 +183,18 @@ public class KodyPayTerminalServiceApi {
     
     // create path and map variables
     String localVarPath = "/v1/pay/terminals/{storeId}"
-      .replaceAll("\\{" + "storeId" + "\\}", apiClient.escapeString(storeId.toString()));
+      .replaceAll("\\{" + "storeId" + "\\}", apiClient.escapeString(storeId));
 
     // query params
     List<Pair> localVarQueryParams = new ArrayList<Pair>();
     Map<String, String> localVarHeaderParams = new HashMap<String, String>();
     Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
-
-    
-    
-    final String[] localVarAccepts = {
-      "application/json"
-    };
-    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-
-    final String[] localVarContentTypes = {
-      "application/json"
-    };
-    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-
-    String[] localVarAuthNames = new String[] { "x_api_key" };
+    final String localVarAccept = apiClient.selectHeaderAccept(new String[] { "application/json" });
+    final String localVarContentType = apiClient.selectHeaderContentType(new String[] { "application/json" });
+    final String[] localVarAuthNames = { "x_api_key" };
 
     GenericType<TerminalsResponse> localVarReturnType = new GenericType<TerminalsResponse>() {};
-    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
+    return apiClient.invokeAPI(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localVarReturnType);
   }
 }

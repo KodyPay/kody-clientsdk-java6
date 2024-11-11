@@ -1,6 +1,6 @@
 package client;
 
-import com.kodypay.api.KodyPayTerminalServiceApi;
+import com.kodypay.api.KodyPayTerminalService;
 import com.kodypay.api.model.*;
 
 import java.math.BigDecimal;
@@ -11,19 +11,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PaymentClient {
-    private static final long TIMEOUT_MS = 1000L * 60 * 3;
+    private static final long TIMEOUT_MS = 1000L * 60 * 3; // timeout after 3 minutes
     private static final Logger LOG = Logger.getLogger(PaymentClient.class.getName());
 
     private final String baseAddress;
     private final UUID payStoreId;
-    private final KodyPayTerminalServiceApi api = new KodyPayTerminalServiceApi();
+    private final KodyPayTerminalService api;
 
     public PaymentClient(URI address, UUID payStoreId, String apiKey) {
-        this.payStoreId = payStoreId;
         this.baseAddress = address.toString();
-
-        api.getApiClient().setBasePath(baseAddress);
-        api.getApiClient().setApiKey(apiKey);
+        this.payStoreId = payStoreId;
+        api = new KodyPayTerminalService(baseAddress, apiKey);
     }
 
     public PayResponse sendPayment(String terminalId, BigDecimal amount, boolean showTips, PaymentConsumer consumer) throws ApiException {
@@ -34,7 +32,7 @@ public class PaymentClient {
         PayRequest pay = new PayRequest()
                 .amount(scaleTwo(amount))
                 .showTips(showTips);
-        PayResponse response = api.kodyPayTerminalServicePay(payStoreId.toString(), terminalId, pay);
+        PayResponse response = api.pay(payStoreId.toString(), terminalId, pay);
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("sendPayment: response=" + response);
         }
@@ -57,6 +55,7 @@ public class PaymentClient {
                 LOG.fine("sendPayment: waiting for response..." + ((now - start) / 1000L) + "s");
             }
             try {
+                //noinspection BusyWait
                 Thread.sleep(2000L);
             } catch (InterruptedException e) {
                 return response;
@@ -68,7 +67,7 @@ public class PaymentClient {
             LOG.fine("sendPayment: finished, response=" + response);
         }
         if (consumer != null) {
-            consumer.completed(orderId);
+            consumer.completed(response);
         }
         return response;
     }
@@ -78,7 +77,7 @@ public class PaymentClient {
             LOG.fine("getDetails: storeId=" + payStoreId + ", orderId=" + orderId + " (address: " + baseAddress + ")");
         }
 
-        PayResponse response = api.kodyPayTerminalServicePaymentDetails(payStoreId.toString(), orderId);
+        PayResponse response = api.paymentDetails(payStoreId.toString(), orderId);
 
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("getDetails: response=" + response);
@@ -94,7 +93,7 @@ public class PaymentClient {
         CancelRequest cancel = new CancelRequest()
                 .amount(scaleTwo(amount))
                 .orderId(orderId);
-        CancelResponse response = api.kodyPayTerminalServiceCancel(payStoreId.toString(), terminalId, cancel);
+        CancelResponse response = api.cancel(payStoreId.toString(), terminalId, cancel);
 
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("cancelPayment: response=" + response);
@@ -107,7 +106,7 @@ public class PaymentClient {
             LOG.fine("getTerminals: storeId=" + payStoreId + " (address: " + baseAddress + ")");
         }
 
-        TerminalsResponse response = api.kodyPayTerminalServiceTerminals(payStoreId.toString());
+        TerminalsResponse response = api.terminals(payStoreId.toString());
 
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("getTerminals: response=" + response);
