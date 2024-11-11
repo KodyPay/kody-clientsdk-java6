@@ -94,7 +94,7 @@ Each of these channels have their own collection of services that are available 
 
 The Kody Payments API Terminal service has the following methods:
 
-- [Get List of Terminals](#Get-list-of-Terminals): `KodyPayTerminalService.terminals` - returns all the terminals of the store and their online status
+- [Get List of Terminals](#get-list-of-Terminals): `KodyPayTerminalService.terminals` - returns all the terminals of the store and their online status
 - [Create Terminal Payment](#create-terminal-payment):`KodyPayTerminalService.pay` - initiate a terminal payment
 - [Cancel terminal payment](#cancel-terminal-payment): `KodyPayTerminalService.cancel` - cancel an active terminal payment
 - [Get Payment Details](#get-terminal-payment-details) `KodyPayTerminalService.paymentDetails` - get the payment details
