@@ -28,6 +28,7 @@ public class Utils {
                 }
             }
         }
+        LOG.fine("Loaded config: " + properties);
         return properties;
     }
 }

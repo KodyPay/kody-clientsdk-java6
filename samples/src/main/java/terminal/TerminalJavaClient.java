@@ -36,6 +36,9 @@ public class TerminalJavaClient {
 
     public PayResponse sendPayment(final String amountStr, boolean showTips) throws ApiException {
         LOG.info("sending payment for amount: " + amountStr + " (showTips=" + showTips + ") to terminal: " + exTerminalId);
+        if (exTerminalId == null) {
+            throw new ApiException(400, "Cannot send payment to invalid terminal");
+        }
 
         PaymentConsumer consumer = new PaymentConsumer() {
             private boolean pending = false;
@@ -94,7 +97,7 @@ public class TerminalJavaClient {
     }
 
     public TerminalsResponse getTerminals(String defaultTerminalId) throws ApiException {
-        LOG.info("Get terminals");
+        LOG.info("Get terminals, default: " + defaultTerminalId);
         TerminalsResponse response = client.getTerminals();
 
         for (Terminal terminal : response.getTerminals()) {
@@ -106,8 +109,11 @@ public class TerminalJavaClient {
                 break;
             }
         }
-        if (exTerminalId == null) {
+        if (exTerminalId == null && !response.getTerminals().isEmpty()) {
             exTerminalId = response.getTerminals().get(0).getTerminalId();
+        } else if (exTerminalId == null) {
+            LOG.info("Didn't find a terminal");
+            return response;
         }
 
         LOG.info("Selected terminal: " + exTerminalId);

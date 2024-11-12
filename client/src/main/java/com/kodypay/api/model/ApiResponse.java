@@ -1,6 +1,5 @@
 package com.kodypay.api.model;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,14 +9,14 @@ import java.util.Map;
  */
 public class ApiResponse<T> {
     private final int statusCode;
-    private final Map<String, List<String>> headers;
+    private final Map<String, String> headers;
     private final T data;
 
     /**
      * @param statusCode The status code of HTTP response
      * @param headers The headers of HTTP response
      */
-    public ApiResponse(int statusCode, Map<String, List<String>> headers) {
+    public ApiResponse(int statusCode, Map<String, String> headers) {
         this(statusCode, headers, null);
     }
 
@@ -26,7 +25,7 @@ public class ApiResponse<T> {
      * @param headers The headers of HTTP response
      * @param data The object deserialized from response bod
      */
-    public ApiResponse(int statusCode, Map<String, List<String>> headers, T data) {
+    public ApiResponse(int statusCode, Map<String, String> headers, T data) {
         this.statusCode = statusCode;
         this.headers = headers;
         this.data = data;
@@ -36,7 +35,7 @@ public class ApiResponse<T> {
         return statusCode;
     }
 
-    public Map<String, List<String>> getHeaders() {
+    public Map<String, String> getHeaders() {
         return headers;
     }
 

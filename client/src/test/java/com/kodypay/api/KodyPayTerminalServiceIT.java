@@ -72,7 +72,7 @@ public class KodyPayTerminalServiceIT {
             }
         }
         System.out.println("Getting final payment details..." + orderId);
-        Thread.sleep(5000);
+        Thread.sleep(10000);
         PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
 
         assertNotNull(detailsResponse);
