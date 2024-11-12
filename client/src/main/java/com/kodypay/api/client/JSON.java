@@ -1,17 +1,19 @@
 package com.kodypay.api.client;
 
-import org.threeten.bp.*;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+//import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.threetenbp.ThreeTenModule;
+import org.threeten.bp.Instant;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import java.text.DateFormat;
 
-import javax.ws.rs.ext.ContextResolver;
-
-public class JSON implements ContextResolver<ObjectMapper> {
-  private ObjectMapper mapper;
+public class JSON {
+  private final ObjectMapper mapper;
 
   public JSON() {
     mapper = new ObjectMapper();
@@ -22,7 +24,6 @@ public class JSON implements ContextResolver<ObjectMapper> {
     mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
     mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
     mapper.setDateFormat(new RFC3339DateFormat());
-    mapper.registerModule(new JavaTimeModule());
     ThreeTenModule module = new ThreeTenModule();
     module.addDeserializer(Instant.class, CustomInstantDeserializer.INSTANT);
     module.addDeserializer(OffsetDateTime.class, CustomInstantDeserializer.OFFSET_DATE_TIME);
@@ -38,8 +39,7 @@ public class JSON implements ContextResolver<ObjectMapper> {
     mapper.setDateFormat(dateFormat);
   }
 
-  @Override
-  public ObjectMapper getContext(Class<?> type) {
+  public ObjectMapper getMapper() {
     return mapper;
   }
 }

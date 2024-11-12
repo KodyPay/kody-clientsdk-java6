@@ -15,20 +15,22 @@ import static org.junit.Assert.*;
  * API tests for KodyPayTerminalServiceApi
  */
 @Ignore("Manual tests only, this triggers the real API")
-public class KodyPayTerminalServiceApiIT {
+public class KodyPayTerminalServiceIT {
     private final String storeId = "7e078533-d85d-451b-ba38-f7672d3b063b";
     private final String terminalId = "S1F2-000158213604086";
 
-    private final KodyPayTerminalServiceApi api = new KodyPayTerminalServiceApi();
+    private KodyPayTerminalService api;
+
     @Before
     public void setUp() {
-        api.getApiClient().setBasePath("https://api-development.kodypay.com");
-        api.getApiClient().setApiKey("SRtC3DIKYlxbG3rlMX8PYUriFkCSFxKESf6Y4q5pIKR9");
+        api = new KodyPayTerminalService(
+                "https://api-development.kodypay.com",
+                "SRtC3DIKYlxbG3rlMX8PYUriFkCSFxKESf6Y4q5pIKR9");
     }
 
     @Test
-    public void kodyPayTerminalServiceTerminalsTest() throws ApiException {
-        TerminalsResponse terminalsResponse = api.kodyPayTerminalServiceTerminals(storeId);
+    public void terminalsTest() throws ApiException {
+        TerminalsResponse terminalsResponse = api.terminals(storeId);
 
         assertNotNull(terminalsResponse);
         List<Terminal> terminalsList = terminalsResponse.getTerminals();
@@ -42,7 +44,7 @@ public class KodyPayTerminalServiceApiIT {
     }
 
     @Test
-    public void kodyPayTerminalServicePayTest() throws ApiException, InterruptedException {
+    public void payTest() throws ApiException, InterruptedException {
         BigDecimal amount = new BigDecimal("1");
         String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
         assertEquals("1.00", amountStr);
@@ -50,7 +52,7 @@ public class KodyPayTerminalServiceApiIT {
         PayRequest pay = new PayRequest()
                 .amount(amountStr)
                 .showTips(false);
-        PayResponse payResponse = api.kodyPayTerminalServicePay(storeId, terminalId, pay);
+        PayResponse payResponse = api.pay(storeId, terminalId, pay);
 
         assertNotNull(payResponse);
         System.out.println(payResponse);
@@ -60,7 +62,7 @@ public class KodyPayTerminalServiceApiIT {
             for (int i = 0; i < 10; i++) {
                 System.out.println("Waiting for payment to complete..." + orderId);
                 Thread.sleep(2000);
-                PayResponse detailsResponse = api.kodyPayTerminalServicePaymentDetails(storeId, orderId);
+                PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
 
                 assertNotNull(detailsResponse);
                 System.out.println(detailsResponse);
@@ -70,19 +72,19 @@ public class KodyPayTerminalServiceApiIT {
             }
         }
         System.out.println("Getting final payment details..." + orderId);
-        Thread.sleep(5000);
-        PayResponse detailsResponse = api.kodyPayTerminalServicePaymentDetails(storeId, orderId);
+        Thread.sleep(10000);
+        PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
 
         assertNotNull(detailsResponse);
         System.out.println(detailsResponse);
     }
 
     @Test
-    public void kodyPayTerminalServiceCancelTest() throws ApiException, InterruptedException {
+    public void cancelTest() throws ApiException, InterruptedException {
         PayRequest pay = new PayRequest()
                 .amount("1.11")
                 .showTips(false);
-        PayResponse payResponse = api.kodyPayTerminalServicePay(storeId, terminalId, pay);
+        PayResponse payResponse = api.pay(storeId, terminalId, pay);
 
         assertNotNull(payResponse);
         System.out.println(payResponse);
@@ -94,21 +96,21 @@ public class KodyPayTerminalServiceApiIT {
             CancelRequest cancel = new CancelRequest()
                     .amount("1.11")
                     .orderId(orderId);
-            CancelResponse cancelResponse = api.kodyPayTerminalServiceCancel(storeId, terminalId, cancel);
+            CancelResponse cancelResponse = api.cancel(storeId, terminalId, cancel);
 
             assertNotNull(cancelResponse);
             System.out.println(cancelResponse);
 
             System.out.println("Waiting for payment to cancel..." + orderId);
             Thread.sleep(2000);
-            PayResponse detailsResponse = api.kodyPayTerminalServicePaymentDetails(storeId, orderId);
+            PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
 
             assertNotNull(detailsResponse);
             System.out.println(detailsResponse);
         }
         System.out.println("Getting final payment details..." + orderId);
         Thread.sleep(5000);
-        PayResponse detailsResponse = api.kodyPayTerminalServicePaymentDetails(storeId, orderId);
+        PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
 
         assertNotNull(detailsResponse);
         System.out.println(detailsResponse);

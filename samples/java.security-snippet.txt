@@ -1,0 +1,11 @@
+#
+# List of providers and their preference order:
+# security.provider.1 is the default
+#
+security.provider.1=org.bouncycastle.jce.provider.BouncyCastleProvider
+security.provider.2=org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+
+#
+# Set the default SSL socket factory provider
+#
+ssl.SocketFactory.provider=org.bouncycastle.jsse.provider.SSLSocketFactoryImpl

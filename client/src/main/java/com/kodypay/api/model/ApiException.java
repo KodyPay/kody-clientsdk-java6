@@ -14,6 +14,11 @@ public class ApiException extends Exception {
         super(throwable);
     }
 
+    public ApiException(String message, Throwable throwable, int code) {
+        super(message, throwable);
+        this.code = code;
+    }
+
     public ApiException(String message) {
         super(message);
     }
