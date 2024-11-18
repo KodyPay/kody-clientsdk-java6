@@ -50,7 +50,23 @@ public class ApiClient {
     }
   }
 
+  /**
+   * Makes an API call to the specified path with the given HTTP method and request body.
+   * The response is deserialized into an object of type T.
+   *
+   * @param <T> The type of data that is deserialized from the response body.
+   * @param path The API endpoint path.
+   * @param method The HTTP method to be used (GET, POST, PUT, DELETE, etc.).
+   * @param body The request body to be sent in the API call.
+   * @param typeRef The reference to the type T for deserialization.
+   * @return An ApiResponse object containing the HTTP status code, response headers, and deserialized response body.
+   * @throws ApiException If there is an error during the API call.
+   */
   public <T> ApiResponse<T> invokeAPI(String path, String method, Object body, final TypeReference<T> typeRef) throws ApiException {
+    return internalAPI(path, method, body, typeRef, false);
+  }
+
+  <T> ApiResponse<T> internalAPI(final String path, final String method, Object body, final TypeReference<T> typeRef, final boolean retry) throws ApiException {
     LOG.finest("invokeAPI: " + method + ": " + path);
     final HttpUriRequest request = getRequest(method, path, body);
     for (Map.Entry<String, String> entry : defaultHeaderMap.entrySet()) {
@@ -64,9 +80,9 @@ public class ApiClient {
         public ApiResponse<T> handleResponse(HttpResponse response) throws IOException {
           int status = response.getStatusLine().getStatusCode();
           LOG.finest("Response status: " + status + " " + response.getStatusLine().getReasonPhrase());
+          HttpEntity entity = response.getEntity();
+          String body = entity != null ? EntityUtils.toString(entity) : null;
           if (status >= 200 && status < 300) {
-            HttpEntity entity = response.getEntity();
-            String body = entity != null ? EntityUtils.toString(entity) : null;
             if (body != null && !body.isEmpty()) {
               LOG.finest("Response body: " + body);
               T data = json.getMapper().readValue(body, typeRef);
@@ -74,9 +90,16 @@ public class ApiClient {
             } else {
               return new ApiResponse<T>(status, buildResponseHeaders(response));
             }
+          } else if (status == 504 && !retry) {
+            try {
+              Thread.sleep(1000L);
+              return internalAPI(path, method, body, typeRef, true);
+            } catch (InterruptedException e) {
+              throw new IOException("Timeout while retrying for status:" + status, e);
+            } catch (ApiException e) {
+              throw new IOException("Unexpected response status: " + status, e);
+            }
           } else {
-            HttpEntity entity = response.getEntity();
-            String body = entity != null ? EntityUtils.toString(entity) : null;
             LOG.finest("Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase() + " " + body);
             throw new IOException("Unexpected response status: " + status);
           }

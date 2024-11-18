@@ -11,5 +11,7 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
-/samples/dev-config.properties
+dev-config.properties
+staging-config.properties
+prod-config.properties
 /samples/jce
