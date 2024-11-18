@@ -7,16 +7,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets PaymentStatus
  */
 public enum PaymentStatus {
-  
   PENDING("PENDING"),
-  
   SUCCESS("SUCCESS"),
-  
   FAILED("FAILED"),
-  
   CANCELLED("CANCELLED");
 
-  private String value;
+  private final String value;
 
   PaymentStatus(String value) {
     this.value = value;

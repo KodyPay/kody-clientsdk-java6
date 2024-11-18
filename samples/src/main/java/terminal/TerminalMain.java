@@ -54,7 +54,16 @@ public class TerminalMain {
 
             if (status == PaymentStatus.PENDING) {
                 CancelResponse cancel = terminalClient.cancelPayment(orderId, amountStr);
-                LOG.info("Payment is cancelled? " + (cancel.getStatus() == PaymentStatus.CANCELLED));
+                LOG.info("Payment is cancelled? " + (cancel.getStatus() == PaymentStatus.CANCELLED) + " (" + cancel.getStatus() + ")");
+            }
+            if (status == PaymentStatus.SUCCESS) {
+                try {
+                    Thread.sleep(10000L);
+                } catch (InterruptedException e) {
+                    LOG.fine(e.getMessage());
+                }
+                RefundResponse refund = terminalClient.refundPayment(orderId, amountStr);
+                LOG.info("Payment is refunded? " + (refund.getStatus() == RefundStatus.REQUESTED) + " (" + refund.getStatus() + ")");
             }
         } catch (ApiException e) {
             LOG.severe(e.getMessage());

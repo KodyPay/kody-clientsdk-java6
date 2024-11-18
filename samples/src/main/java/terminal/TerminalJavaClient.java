@@ -119,4 +119,12 @@ public class TerminalJavaClient {
         LOG.info("Selected terminal: " + exTerminalId);
         return response;
     }
+
+    public RefundResponse refundPayment(String orderId, String amountStr) throws ApiException {
+        LOG.info("Refunding payment for order: " + orderId + " with amount: " + amountStr);
+        BigDecimal amount = new BigDecimal(amountStr);
+        RefundResponse response = client.refundPayment(orderId, amount);
+        LOG.info("Payment refund requested: " + response);
+        return response;
+    }
 }
