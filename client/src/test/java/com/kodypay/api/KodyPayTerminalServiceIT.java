@@ -2,30 +2,56 @@ package com.kodypay.api;
 
 import com.kodypay.api.model.*;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Ignore;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
 /**
- * API tests for KodyPayTerminalServiceApi
+ * API tests for KodyPayTerminalService
  */
 @Ignore("Manual tests only, this triggers the real API")
 public class KodyPayTerminalServiceIT {
-    private final String storeId = "7e078533-d85d-451b-ba38-f7672d3b063b";
-    private final String terminalId = "S1F2-000158213604086";
+    public static final String LOGGING_PROPERTIES = "src/test/resources/logging.properties";
+    public static final String CONFIG_PROPERTIES = "src/test/resources/dev-config.properties";
+//    public static final String CONFIG_PROPERTIES = "src/test/resources/staging-config.properties";
+    private static String address;
+    private static String apiKey;
+    private static String storeId;
+    private static String terminalId;
 
     private KodyPayTerminalService api;
 
+    @BeforeClass
+    public static void setUpClass() throws IOException {
+        String loggingPath = new File(LOGGING_PROPERTIES).getAbsolutePath();
+        System.out.println("Setting up logging..." + loggingPath);
+        System.setProperty("java.util.logging.config.file", loggingPath);
+
+        String configPath = new File(CONFIG_PROPERTIES).getAbsolutePath();
+        System.out.println("Setting up config..." + configPath);
+        Properties props = new Properties();
+        props.load(new FileInputStream(configPath));
+        System.out.println("Config: " + props);
+        address = props.getProperty("address");
+        apiKey = props.getProperty("apiKey");
+        storeId = props.getProperty("storeId");
+        terminalId = props.getProperty("terminalId");
+    }
+
     @Before
     public void setUp() {
-        api = new KodyPayTerminalService(
-                "https://api-development.kodypay.com",
-                "SRtC3DIKYlxbG3rlMX8PYUriFkCSFxKESf6Y4q5pIKR9");
+        api = new KodyPayTerminalService(address, apiKey);
     }
 
     @Test

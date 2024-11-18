@@ -34,6 +34,7 @@ If your coding language is not listed, please let the Kody team know and we will
 - Java6 client supports JDK 6 (to JDK 11)
   - _Note: Please use [Java client](https://github.com/KodyPay/kody-clientsdk-java/) if you are using JDK 17 (or newer)_
 - Maven (optional), recommended way to install the SDK
+- TLSv1.2 security setting, see [README-SECURITY](README-SECURITY.md) for more information.
 
 Install the Kody Java6 Client SDK using the following Maven snippet:
 
