@@ -142,4 +142,52 @@ public class KodyPayTerminalServiceIT {
         System.out.println(detailsResponse);
     }
 
+    @Test
+    public void refundTest() throws ApiException, InterruptedException {
+        BigDecimal amount = new BigDecimal("1");
+        String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
+        assertEquals("1.00", amountStr);
+
+        PayRequest pay = new PayRequest()
+                .amount(amountStr)
+                .showTips(false);
+        PayResponse payResponse = api.pay(storeId, terminalId, pay);
+
+        assertNotNull(payResponse);
+        System.out.println(payResponse);
+        String orderId = payResponse.getOrderId();
+
+        if (payResponse.getStatus() == PaymentStatus.PENDING) {
+            for (int i = 0; i < 10; i++) {
+                System.out.println("Waiting for payment to complete..." + orderId);
+                Thread.sleep(2000);
+                PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
+
+                assertNotNull(detailsResponse);
+                System.out.println(detailsResponse);
+                if (detailsResponse.getStatus() != PaymentStatus.PENDING) {
+                    break;
+                }
+            }
+        }
+        System.out.println("Getting final payment details..." + orderId);
+        Thread.sleep(10000);
+        PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
+
+        assertNotNull(detailsResponse);
+        System.out.println(detailsResponse);
+
+        if (detailsResponse.getStatus() == PaymentStatus.SUCCESS) {
+            System.out.println("Refunding payment...");
+            RefundRequest refund = new RefundRequest()
+                    .amount("0.50")
+                    .printMerchantReceipt(true);
+            RefundResponse refundResponse = api.refund(storeId, orderId, refund);
+            assertNotNull(refundResponse);
+            System.out.println(refundResponse);
+        } else {
+            System.out.println("Cannot refund - invalid status..." + detailsResponse.getStatus());
+        }
+    }
+
 }

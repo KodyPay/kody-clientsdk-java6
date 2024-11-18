@@ -114,6 +114,21 @@ public class PaymentClient {
         return response;
     }
 
+    public RefundResponse refundPayment(String orderId, BigDecimal amount) throws ApiException {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("refundPayment: storeId=" + payStoreId + ", orderId=" + orderId + ", amount=" + amount + " (address: " + baseAddress + ")");
+        }
+
+        RefundRequest refund = new RefundRequest()
+                .amount(scaleTwo(amount));
+        RefundResponse response = api.refund(payStoreId.toString(), orderId, refund);
+
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("refundPayment: response=" + response);
+        }
+        return response;
+    }
+
     private String scaleTwo(BigDecimal amount) {
         if (amount == null) {
             return "0.00";

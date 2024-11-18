@@ -7,6 +7,7 @@ import com.kodypay.api.model.ApiResponse;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 
 public class ApiClient {
   private static final Logger LOG = Logger.getLogger(ApiClient.class.getName());
+  public static final int CONNECT_TIMEOUT = 180 * 1000;
   private final Map<String, String> defaultHeaderMap = new HashMap<String, String>();
   private final HttpClient httpClient;
   private final JSON json;
@@ -28,7 +30,14 @@ public class ApiClient {
 
   public ApiClient(String basePath, String apiKey) {
     json = new JSON();
-    httpClient = HttpClientBuilder.create().setUserAgent("KodyPay").build();
+    httpClient = HttpClientBuilder.create()
+            .setUserAgent("KodyPay")
+            .setDefaultRequestConfig(RequestConfig.custom()
+                .setConnectTimeout(CONNECT_TIMEOUT)
+                .setConnectionRequestTimeout(CONNECT_TIMEOUT)
+                .setSocketTimeout(CONNECT_TIMEOUT)
+                .build()
+            ).build();
     this.basePath = basePath;
     defaultHeaderMap.put("Accept", "application/json");
     defaultHeaderMap.put("Content-Type", "application/json");
@@ -66,9 +75,9 @@ public class ApiClient {
     return internalAPI(path, method, body, typeRef, false);
   }
 
-  <T> ApiResponse<T> internalAPI(final String path, final String method, Object body, final TypeReference<T> typeRef, final boolean retry) throws ApiException {
+  <T> ApiResponse<T> internalAPI(final String path, final String method, final Object requestBody, final TypeReference<T> typeRef, final boolean retry) throws ApiException {
     LOG.finest("invokeAPI: " + method + ": " + path);
-    final HttpUriRequest request = getRequest(method, path, body);
+    final HttpUriRequest request = getRequest(method, path, requestBody);
     for (Map.Entry<String, String> entry : defaultHeaderMap.entrySet()) {
       request.addHeader(entry.getKey(), entry.getValue());
     }
@@ -80,27 +89,27 @@ public class ApiClient {
         public ApiResponse<T> handleResponse(HttpResponse response) throws IOException {
           int status = response.getStatusLine().getStatusCode();
           LOG.finest("Response status: " + status + " " + response.getStatusLine().getReasonPhrase());
-          HttpEntity entity = response.getEntity();
-          String body = entity != null ? EntityUtils.toString(entity) : null;
           if (status >= 200 && status < 300) {
-            if (body != null && !body.isEmpty()) {
-              LOG.finest("Response body: " + body);
-              T data = json.getMapper().readValue(body, typeRef);
+            final HttpEntity responseEntity = response.getEntity();
+            final String responseBody = responseEntity != null ? EntityUtils.toString(responseEntity) : null;
+            if (responseBody != null && !responseBody.isEmpty()) {
+              LOG.finest("Response body: " + responseBody);
+              T data = json.getMapper().readValue(responseBody, typeRef);
               return new ApiResponse<T>(status, buildResponseHeaders(response), data);
             } else {
               return new ApiResponse<T>(status, buildResponseHeaders(response));
             }
           } else if (status == 504 && !retry) {
             try {
-              Thread.sleep(1000L);
-              return internalAPI(path, method, body, typeRef, true);
+              Thread.sleep(2000L);
+              return internalAPI(path, method, requestBody, typeRef, true);
             } catch (InterruptedException e) {
               throw new IOException("Timeout while retrying for status:" + status, e);
             } catch (ApiException e) {
               throw new IOException("Unexpected response status: " + status, e);
             }
           } else {
-            LOG.finest("Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase() + " " + body);
+            LOG.finest("Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase() + " " + requestBody);
             throw new IOException("Unexpected response status: " + status);
           }
         }
