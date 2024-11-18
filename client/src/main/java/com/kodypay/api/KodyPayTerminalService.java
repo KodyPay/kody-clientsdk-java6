@@ -163,4 +163,46 @@ public class KodyPayTerminalService {
     final TypeReference<TerminalsResponse> typeRef = new TypeReference<TerminalsResponse>() {};
     return apiClient.invokeAPI(localVarPath, "GET", null, typeRef);
   }
+
+  /**
+   * Refund a payment.
+   *
+   * @param storeId UUID of store (required)
+   * @param orderId to identify the payment (order) (required)
+   * @param body refund request (required)
+   * @return RefundResponse
+   * @throws ApiException if fails to make API call
+   */
+  public RefundResponse refund(String storeId, String orderId, RefundRequest body) throws ApiException {
+    return kodyPayTerminalServiceRefundWithHttpInfo(storeId, orderId, body).getData();
+  }
+
+  ApiResponse<RefundResponse> kodyPayTerminalServiceRefundWithHttpInfo(String storeId, String orderId, RefundRequest body) throws ApiException {
+    LOG.finest("refund: storeId=" + storeId + ", orderId=" + orderId + ", body=" + body);
+    // verify the required parameter 'storeId' is set
+    if (storeId == null) {
+      LOG.severe("refund: storeId is null");
+      throw new ApiException(400, "Missing the required parameter 'storeId' when calling refund request");
+    }
+
+    // verify the required parameter 'orderId' is set
+    if (orderId == null) {
+      LOG.severe("refund: orderId is null");
+      throw new ApiException(400, "Missing the required parameter 'orderId' when calling refund request");
+    }
+
+    // verify the required parameter 'body' is set
+    if (body == null) {
+      LOG.severe("refund: body is null");
+      throw new ApiException(400, "Missing the required parameter 'body' when calling refund request");
+    }
+
+    // create path and map variables
+    String localVarPath = "/v1/pay/refund/{storeId}/{orderId}"
+            .replaceAll("\\{" + "storeId" + "\\}", apiClient.escapeString(storeId))
+            .replaceAll("\\{" + "orderId" + "\\}", apiClient.escapeString(orderId));
+
+    final TypeReference<RefundResponse> typeRef = new TypeReference<RefundResponse>() {};
+    return apiClient.invokeAPI(localVarPath, "PATCH", body, typeRef);
+  }
 }
