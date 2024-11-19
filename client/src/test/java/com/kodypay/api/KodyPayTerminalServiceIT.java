@@ -180,8 +180,7 @@ public class KodyPayTerminalServiceIT {
         if (detailsResponse.getStatus() == PaymentStatus.SUCCESS) {
             System.out.println("Refunding payment...");
             RefundRequest refund = new RefundRequest()
-                    .amount("0.50")
-                    .printMerchantReceipt(true);
+                    .amount("0.50");
             RefundResponse refundResponse = api.refund(storeId, orderId, refund);
             assertNotNull(refundResponse);
             System.out.println(refundResponse);
