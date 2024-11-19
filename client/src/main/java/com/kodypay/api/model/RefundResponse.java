@@ -13,8 +13,6 @@ public class RefundResponse {
     private String orderId;
     @JsonProperty("failureReason")
     private String failureReason;
-    @JsonProperty("receiptJson")
-    private Map<String, Object> receiptJson;
     @JsonProperty("dateCreated")
     private OffsetDateTime dateCreated;
     @JsonProperty("totalPaidAmount")
@@ -65,18 +63,6 @@ public class RefundResponse {
         this.failureReason = failureReason;
     }
 
-    /**
-     * Gets the receipt JSON containing detailed information.
-     * 
-     * @return the receipt JSON.
-     */
-    public Map<String, Object> getReceiptJson() {
-        return receiptJson;
-    }
-
-    public void setReceiptJson(Map<String, Object> receiptJson) {
-        this.receiptJson = receiptJson;
-    }
 
     /**
      * Gets the date and time when the refund response was created.
@@ -149,7 +135,6 @@ public class RefundResponse {
         sb.append("status='").append(status).append('\'');
         sb.append(", orderId='").append(orderId).append('\'');
         sb.append(", failureReason='").append(failureReason).append('\'');
-        sb.append(", receiptJson=").append(receiptJson);
         sb.append(", dateCreated=").append(dateCreated);
         sb.append(", totalPaidAmount='").append(totalPaidAmount).append('\'');
         sb.append(", totalAmountRequested='").append(totalAmountRequested).append('\'');
@@ -167,7 +152,6 @@ public class RefundResponse {
         return status.equals(that.status)
                 && orderId.equals(that.orderId)
                 && (failureReason == null ? that.failureReason == null : failureReason.equals(that.failureReason))
-                && (receiptJson == null ? that.receiptJson == null : receiptJson.equals(that.receiptJson))
                 && dateCreated.equals(that.dateCreated)
                 && totalPaidAmount.equals(that.totalPaidAmount)
                 && totalAmountRequested.equals(that.totalAmountRequested)
@@ -180,7 +164,6 @@ public class RefundResponse {
         int result = status.hashCode();
         result = 31 * result + orderId.hashCode();
         result = 31 * result + (failureReason != null ? failureReason.hashCode() : 0);
-        result = 31 * result + (receiptJson != null ? receiptJson.hashCode() : 0);
         result = 31 * result + dateCreated.hashCode();
         result = 31 * result + totalPaidAmount.hashCode();
         result = 31 * result + totalAmountRequested.hashCode();
