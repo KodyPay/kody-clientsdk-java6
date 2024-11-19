@@ -42,6 +42,6 @@ public class RefundRequest {
 
     @Override
     public int hashCode() {
-        return amount.hashCode();
+        return 31 * amount.hashCode();
     }
 }
