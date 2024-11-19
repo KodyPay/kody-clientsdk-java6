@@ -42,7 +42,7 @@ Install the Kody Java6 Client SDK using the following Maven snippet:
 <dependency>
     <groupId>com.kodypay.api</groupId>
     <artifactId>kody-clientsdk-java6</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 The library can also be downloaded from [here](https://central.sonatype.com/artifact/com.kodypay.api/kody-clientsdk-java6/overview).
@@ -322,15 +322,13 @@ The refund payment request requires the following parameters:
 public enum RefundStatus {
     PENDING("PENDING"),
     REQUESTED("REQUESTED"),
-    FAILED("FAILED"),
-    REFUNDED("REFUNDED")
+    FAILED("FAILED")
 }
 
 public class RefundResponse {
     private RefundStatus status;             // Refund status
     private String orderId;                  // The order ID sent in the request
     private String failureReason;            // If the refund fails, this will show the reason why
-    private Map<String, Object> receiptJson; // Receipt from original payment
     private OffsetDateTime dateCreated;      // Date when the refund was requested
     private String totalPaidAmount;          // How much was paid for the order
     private String totalAmountRequested;     // The total amount of refunds requested for this order
