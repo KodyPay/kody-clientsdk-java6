@@ -159,7 +159,17 @@ This screen can be closed (by tapping the `X` icon) to access other terminal fea
 public class PayRequest {
     private String amount = null;
     private Boolean showTips = null;
-    private PaymentMethodType paymentMethodType = null;
+    private PaymentMethod paymentMethod = null;
+}
+
+public class PayMethod {
+  private PaymentMethodType paymentMethodType = null;
+}
+
+public enum PaymentMethodType {
+  CARD("CARD"),
+  ALIPAY("ALIPAY"),
+  WECHAT("WECHAT")
 }
 
 String storeId = "UUID of assigned store";
