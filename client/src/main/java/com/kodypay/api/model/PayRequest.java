@@ -12,7 +12,7 @@ public class PayRequest {
   @JsonProperty("showTips")
   private Boolean showTips = null;
 
-  @JsonProperty("paymentMethodType")
+  @JsonProperty("paymentMethod")
   private PaymentMethod paymentMethod = null;
 
    /**

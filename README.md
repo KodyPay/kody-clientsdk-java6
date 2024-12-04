@@ -162,7 +162,7 @@ public class PayRequest {
     private PaymentMethod paymentMethod = null;
 }
 
-public class PayMethod {
+public class PaymentMethod {
   private PaymentMethodType paymentMethodType = null;
 }
 
