@@ -30,12 +30,8 @@ public class TerminalJavaClient {
         client = new PaymentClient(address, storeId, apiKey);
     }
 
-    public PayResponse sendPayment(final String amountStr) throws ApiException {
-        return sendPayment(amountStr, false);
-    }
-
-    public PayResponse sendPayment(final String amountStr, boolean showTips) throws ApiException {
-        LOG.info("sending payment for amount: " + amountStr + " (showTips=" + showTips + ") to terminal: " + exTerminalId);
+    public PayResponse sendPayment(final String amountStr, boolean showTips, PaymentMethodType paymentMethodType) throws ApiException {
+        LOG.info("sending payment for amount: " + amountStr + " (showTips=" + showTips + ", paymentMethodType=" + paymentMethodType + ") to terminal: " + exTerminalId);
         if (exTerminalId == null) {
             throw new ApiException(400, "Cannot send payment to invalid terminal");
         }
@@ -77,7 +73,7 @@ public class TerminalJavaClient {
         };
 
         BigDecimal amount = new BigDecimal(amountStr);
-        return client.sendPayment(exTerminalId, amount, showTips, consumer);
+        return client.sendPayment(exTerminalId, amount, showTips, paymentMethodType, consumer);
     }
 
     public PayResponse getDetails(String orderId) throws ApiException {

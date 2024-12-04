@@ -12,10 +12,8 @@ public class PayRequest {
   @JsonProperty("showTips")
   private Boolean showTips = null;
 
-  public PayRequest amount(String amount) {
-    this.amount = amount;
-    return this;
-  }
+  @JsonProperty("paymentMethodType")
+  private PaymentMethod paymentMethod = null;
 
    /**
    * Get amount
@@ -27,11 +25,6 @@ public class PayRequest {
 
   public void setAmount(String amount) {
     this.amount = amount;
-  }
-
-  public PayRequest showTips(Boolean showTips) {
-    this.showTips = showTips;
-    return this;
   }
 
    /**
@@ -46,6 +39,32 @@ public class PayRequest {
     this.showTips = showTips;
   }
 
+  /**
+   * Get paymentMethod
+   * @return paymentMethod
+   **/
+  public PaymentMethod getPaymentMethod() {
+    return paymentMethod;
+  }
+
+  public void setPaymentMethod(PaymentMethod paymentMethod) {
+    this.paymentMethod = paymentMethod;
+  }
+
+  public PayRequest amount(String amount) {
+    this.amount = amount;
+    return this;
+  }
+
+  public PayRequest showTips(Boolean showTips) {
+    this.showTips = showTips;
+    return this;
+  }
+
+  public PayRequest paymentMethod(PaymentMethod paymentMethod) {
+    this.paymentMethod = paymentMethod;
+    return this;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {

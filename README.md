@@ -159,6 +159,7 @@ This screen can be closed (by tapping the `X` icon) to access other terminal fea
 public class PayRequest {
     private String amount = null;
     private Boolean showTips = null;
+    private PaymentMethodType paymentMethodType = null;
 }
 
 String storeId = "UUID of assigned store";
@@ -171,6 +172,8 @@ Request parameters:
 - `terminalId` - the serial number of the terminal that will process the payment request. This number is returned by the [list of terminals request](#get-list-of-terminals), or can be found on the back label of the hardware.
 - `amount` - amount as a 2.dp decimal number, such as `"1.00"`
 - `showTips` - (optional) whether to show (true) or hide (false) the tip options. Default is (false)
+- `payment_method` - (optional) Settings to enable going straight to QR scanning
+  - `payment_method_type` - Payment method type: CARD (default), ALIPAY, WECHAT
 
 
 #### PayResponse : Payment Response
@@ -334,6 +337,7 @@ public class RefundResponse {
     private String totalAmountRequested;     // The total amount of refunds requested for this order
     private String totalAmountRefunded;      // The total amount of refunds applied to this order
     private String remainingAmount;          // The amount remaining for this order
+    private String paymentTransactionId;     // The ID of the payment that needs refunding
 }
 ````
 

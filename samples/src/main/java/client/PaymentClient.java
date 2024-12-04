@@ -24,14 +24,17 @@ public class PaymentClient {
         api = new KodyPayTerminalService(baseAddress, apiKey);
     }
 
-    public PayResponse sendPayment(String terminalId, BigDecimal amount, boolean showTips, PaymentConsumer consumer) throws ApiException {
+    public PayResponse sendPayment(String terminalId, BigDecimal amount, boolean showTips, PaymentMethodType paymentMethodType, PaymentConsumer consumer) throws ApiException {
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("sendPayment: storeId=" + payStoreId + ", amount=" + amount + ", terminalId=" + terminalId + " (address: " + baseAddress + ")");
+            LOG.fine("sendPayment: storeId=" + payStoreId + ", amount=" + amount + ", terminalId=" + terminalId + " (showTips=" + showTips + ", paymentMethodType=" + paymentMethodType + ")" + " (address: " + baseAddress + ")");
         }
 
         PayRequest pay = new PayRequest()
                 .amount(scaleTwo(amount))
-                .showTips(showTips);
+                .showTips(showTips)
+                .paymentMethod(new PaymentMethod()
+                        .paymentMethodType(paymentMethodType)
+                );
         PayResponse response = api.pay(payStoreId.toString(), terminalId, pay);
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("sendPayment: response=" + response);

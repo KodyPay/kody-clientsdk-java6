@@ -23,6 +23,8 @@ public class RefundResponse {
     private String totalAmountRefunded;
     @JsonProperty("remainingAmount")
     private String remainingAmount;
+    @JsonProperty("paymentTransactionId")
+    private String paymentTransactionId;
 
     /**
      * Gets the status of the refund response.
@@ -129,6 +131,20 @@ public class RefundResponse {
         this.remainingAmount = remainingAmount;
     }
 
+    /**
+     * Gets the payment transaction ID associated with the refund response.
+     *
+     * @return the payment transaction id.
+     */
+
+    public String getPaymentTransactionId() {
+        return paymentTransactionId;
+    }
+
+    public void setPaymentTransactionId(String paymentTransactionId) {
+        this.paymentTransactionId = paymentTransactionId;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("RefundResponse{");
@@ -140,6 +156,7 @@ public class RefundResponse {
         sb.append(", totalAmountRequested='").append(totalAmountRequested).append('\'');
         sb.append(", totalAmountRefunded='").append(totalAmountRefunded).append('\'');
         sb.append(", remainingAmount='").append(remainingAmount).append('\'');
+        sb.append(", paymentTransactionId='").append(paymentTransactionId).append('\'');
         sb.append('}');
         return sb.toString();
     }
@@ -156,7 +173,8 @@ public class RefundResponse {
                 && totalPaidAmount.equals(that.totalPaidAmount)
                 && totalAmountRequested.equals(that.totalAmountRequested)
                 && totalAmountRefunded.equals(that.totalAmountRefunded)
-                && remainingAmount.equals(that.remainingAmount);
+                && remainingAmount.equals(that.remainingAmount)
+                && paymentTransactionId.equals(that.paymentTransactionId);
     }
 
     @Override
@@ -169,6 +187,7 @@ public class RefundResponse {
         result = 31 * result + totalAmountRequested.hashCode();
         result = 31 * result + totalAmountRefunded.hashCode();
         result = 31 * result + remainingAmount.hashCode();
+        result = 31 * result + paymentTransactionId.hashCode();
         return result;
     }
 }
