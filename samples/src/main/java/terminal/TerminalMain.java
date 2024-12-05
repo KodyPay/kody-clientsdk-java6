@@ -9,7 +9,7 @@ import static terminal.Utils.loadProperties;
 public class TerminalMain {
     // configure logging using -Djava.util.logging.config.file=samples/logging.properties
     private static final Logger LOG = Logger.getLogger(TerminalMain.class.getName());
-//    private static final String CONFIG_FILE = "samples/config.properties";
+    //    private static final String CONFIG_FILE = "samples/config.properties";
     private static final String CONFIG_FILE = "samples/dev-config.properties";
     private static final TerminalJavaClient terminalClient = new TerminalJavaClient(CONFIG_FILE);
 
@@ -34,9 +34,10 @@ public class TerminalMain {
         try {
             String amountStr = "1.00";
             boolean isShowTips = false;
+            PaymentMethodType paymentMethodType = PaymentMethodType.CARD;
 
             listTerminals();
-            PayResponse completed = terminalClient.sendPayment(amountStr, isShowTips);
+            PayResponse completed = terminalClient.sendPayment(amountStr, isShowTips, paymentMethodType);
             LOG.info("Completed payment: " + completed);
 
             String orderId = completed.getOrderId();

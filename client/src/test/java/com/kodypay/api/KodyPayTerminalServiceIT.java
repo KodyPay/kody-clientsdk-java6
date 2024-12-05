@@ -3,12 +3,11 @@ package com.kodypay.api;
 import com.kodypay.api.model.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,7 +23,7 @@ import static org.junit.Assert.*;
 public class KodyPayTerminalServiceIT {
     public static final String LOGGING_PROPERTIES = "src/test/resources/logging.properties";
     public static final String CONFIG_PROPERTIES = "src/test/resources/dev-config.properties";
-//    public static final String CONFIG_PROPERTIES = "src/test/resources/staging-config.properties";
+    //    public static final String CONFIG_PROPERTIES = "src/test/resources/staging-config.properties";
     private static String address;
     private static String apiKey;
     private static String storeId;
@@ -75,9 +74,13 @@ public class KodyPayTerminalServiceIT {
         String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
         assertEquals("1.00", amountStr);
 
+        PaymentMethod paymentMethod = new PaymentMethod().paymentMethodType(PaymentMethodType.ALIPAY);
+
         PayRequest pay = new PayRequest()
                 .amount(amountStr)
-                .showTips(false);
+                .showTips(false)
+                .paymentMethod(paymentMethod);
+
         PayResponse payResponse = api.pay(storeId, terminalId, pay);
 
         assertNotNull(payResponse);
