@@ -183,8 +183,8 @@ Request parameters:
 - `terminalId` - the serial number of the terminal that will process the payment request. This number is returned by the [list of terminals request](#get-list-of-terminals), or can be found on the back label of the hardware.
 - `amount` - amount as a 2.dp decimal number, such as `"1.00"`
 - `showTips` - (optional) whether to show (true) or hide (false) the tip options. Default is (false)
-- `payment_method` - (optional) Settings to enable going straight to QR scanning
-  - `payment_method_type` - Payment method type: CARD (default), ALIPAY, WECHAT
+- `paymentMethod` - (optional) Settings to enable going straight to QR scanning
+  - `paymentMethodType` - Payment method type: CARD (default), ALIPAY, WECHAT
 - `orderId` - unique order id (UUID) sent in request to prevent duplicate payments (if sent by client, the same `orderId` is returned by server)
 
 
