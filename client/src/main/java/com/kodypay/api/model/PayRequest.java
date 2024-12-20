@@ -2,6 +2,8 @@ package com.kodypay.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.UUID;
+
 /**
  * PayRequest
  */
@@ -14,6 +16,9 @@ public class PayRequest {
 
   @JsonProperty("paymentMethod")
   private PaymentMethod paymentMethod = null;
+
+  @JsonProperty("orderId")
+  private UUID orderId = null;
 
    /**
    * Get amount
@@ -51,6 +56,18 @@ public class PayRequest {
     this.paymentMethod = paymentMethod;
   }
 
+  /**
+   * Get order ID (idempotency key)
+   * @return orderId
+   **/
+  public UUID getOrderId() {
+    return orderId;
+  }
+
+  public void setOrderId(UUID orderId) {
+    this.orderId = orderId;
+  }
+
   public PayRequest amount(String amount) {
     this.amount = amount;
     return this;
@@ -66,6 +83,11 @@ public class PayRequest {
     return this;
   }
 
+  public PayRequest orderId(UUID orderId) {
+    this.orderId = orderId;
+    return this;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -76,7 +98,8 @@ public class PayRequest {
     }
     PayRequest payRequest = (PayRequest) o;
     return Objects.equals(this.amount, payRequest.amount) &&
-        Objects.equals(this.showTips, payRequest.showTips);
+        Objects.equals(this.showTips, payRequest.showTips) &&
+        Objects.equals(this.orderId, payRequest.orderId);
   }
 
   @Override
@@ -84,6 +107,7 @@ public class PayRequest {
     int result = 17;
     result = 31 * result + (this.amount == null ? 0: this.amount.hashCode());
     result = 31 * result + (this.showTips == null ? 0: this.showTips.hashCode());
+    result = 31 * result + (this.orderId == null ? 0: this.orderId.hashCode());
     return result;
   }
 
@@ -95,6 +119,7 @@ public class PayRequest {
     
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
     sb.append("    showTips: ").append(toIndentedString(showTips)).append("\n");
+    sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
     sb.append("}");
     return sb.toString();
   }
