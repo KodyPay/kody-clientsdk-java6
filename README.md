@@ -42,7 +42,7 @@ Install the Kody Java6 Client SDK using the following Maven snippet:
 <dependency>
     <groupId>com.kodypay.api</groupId>
     <artifactId>kody-clientsdk-java6</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 </dependency>
 ```
 The library can also be downloaded from [here](https://central.sonatype.com/artifact/com.kodypay.api/kody-clientsdk-java6/overview).
