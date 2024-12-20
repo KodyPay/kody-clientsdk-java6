@@ -29,9 +29,11 @@ public class PaymentClient {
             LOG.fine("sendPayment: storeId=" + payStoreId + ", amount=" + amount + ", terminalId=" + terminalId + " (showTips=" + showTips + ", paymentMethodType=" + paymentMethodType + ")" + " (address: " + baseAddress + ")");
         }
 
+        UUID idempotencyKey = UUID.randomUUID();
         PayRequest pay = new PayRequest()
                 .amount(scaleTwo(amount))
                 .showTips(showTips)
+                .orderId(idempotencyKey)
                 .paymentMethod(new PaymentMethod()
                         .paymentMethodType(paymentMethodType)
                 );
@@ -122,8 +124,10 @@ public class PaymentClient {
             LOG.fine("refundPayment: storeId=" + payStoreId + ", orderId=" + orderId + ", amount=" + amount + " (address: " + baseAddress + ")");
         }
 
+        UUID idempotencyKey = UUID.randomUUID();
         RefundRequest refund = new RefundRequest()
-                .amount(scaleTwo(amount));
+                .amount(scaleTwo(amount))
+                .idempotencyKey(idempotencyKey);
         RefundResponse response = api.refund(payStoreId.toString(), orderId, refund);
 
         if (LOG.isLoggable(Level.FINE)) {

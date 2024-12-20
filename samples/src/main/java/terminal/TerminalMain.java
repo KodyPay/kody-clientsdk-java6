@@ -53,10 +53,11 @@ public class TerminalMain {
             PaymentStatus status = details.getStatus();
             LOG.info("Payment status: " + status);
 
-            if (status == PaymentStatus.PENDING) {
-                CancelResponse cancel = terminalClient.cancelPayment(orderId, amountStr);
-                LOG.info("Payment is cancelled? " + (cancel.getStatus() == PaymentStatus.CANCELLED) + " (" + cancel.getStatus() + ")");
-            }
+//optional step: disable cancel to verify refund flow
+//            if (status == PaymentStatus.PENDING) {
+//                CancelResponse cancel = terminalClient.cancelPayment(orderId, amountStr);
+//                LOG.info("Payment is cancelled? " + (cancel.getStatus() == PaymentStatus.CANCELLED) + " (" + cancel.getStatus() + ")");
+//            }
             if (status == PaymentStatus.SUCCESS) {
                 try {
                     Thread.sleep(10000L);

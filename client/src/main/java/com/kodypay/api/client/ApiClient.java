@@ -99,7 +99,7 @@ public class ApiClient {
             } else {
               return new ApiResponse<T>(status, buildResponseHeaders(response));
             }
-          } else if (status == 504 && !retry) {
+          } else if ((status == 504 || status == 503) && !retry) {
             try {
               Thread.sleep(2000L);
               return internalAPI(path, method, requestBody, typeRef, true);
