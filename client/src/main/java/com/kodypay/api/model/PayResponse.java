@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.threeten.bp.OffsetDateTime;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * PayResponse
@@ -21,11 +22,20 @@ public class PayResponse {
   @JsonProperty("orderId")
   private String orderId = null;
 
+  @JsonProperty("paymentReference")
+  private String paymentReference = null;
+
+  @JsonProperty("idempotencyUuid")
+  private UUID idempotencyUuid = null;
+
   @JsonProperty("dateCreated")
   private OffsetDateTime dateCreated = null;
 
   @JsonProperty("extPaymentRef")
   private String extPaymentRef = null;
+
+  @JsonProperty("pspReference")
+  private String pspReference = null;
 
   @JsonProperty("datePaid")
   private OffsetDateTime datePaid = null;
@@ -105,6 +115,30 @@ public class PayResponse {
 
   public void setOrderId(String orderId) {
     this.orderId = orderId;
+  }
+
+   /**
+   * Get paymentReference
+   * @return paymentReference
+  **/
+  public String getPaymentReference() {
+    return paymentReference;
+  }
+
+  public void setPaymentReference(String orderId) {
+    this.paymentReference = orderId;
+  }
+
+   /**
+   * Get idempotencyUuid
+   * @return idempotencyUuid
+  **/
+  public UUID getIdempotencyUuid() {
+    return idempotencyUuid;
+  }
+
+  public void setIdempotencyUuid(UUID idempotencyUuid) {
+    this.idempotencyUuid = idempotencyUuid;
   }
 
   public PayResponse dateCreated(OffsetDateTime dateCreated) {

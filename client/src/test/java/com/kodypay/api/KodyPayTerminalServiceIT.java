@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -74,12 +75,14 @@ public class KodyPayTerminalServiceIT {
         String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
         assertEquals("1.00", amountStr);
 
-        PaymentMethod paymentMethod = new PaymentMethod().paymentMethodType(PaymentMethodType.ALIPAY);
+        PaymentMethod paymentMethod = new PaymentMethod().paymentMethodType(PaymentMethodType.CARD);
 
+        UUID idempotencyUuid = UUID.randomUUID();
         PayRequest pay = new PayRequest()
                 .amount(amountStr)
                 .showTips(false)
-                .paymentMethod(paymentMethod);
+                .paymentMethod(paymentMethod)
+                .idempotencyUuid(idempotencyUuid);
 
         PayResponse payResponse = api.pay(storeId, terminalId, pay);
 
@@ -151,9 +154,11 @@ public class KodyPayTerminalServiceIT {
         String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
         assertEquals("1.00", amountStr);
 
+        UUID idempotencyUuid = UUID.randomUUID();
         PayRequest pay = new PayRequest()
                 .amount(amountStr)
-                .showTips(false);
+                .showTips(false)
+                .orderId(idempotencyUuid);
         PayResponse payResponse = api.pay(storeId, terminalId, pay);
 
         assertNotNull(payResponse);
@@ -183,7 +188,8 @@ public class KodyPayTerminalServiceIT {
         if (detailsResponse.getStatus() == PaymentStatus.SUCCESS) {
             System.out.println("Refunding payment...");
             RefundRequest refund = new RefundRequest()
-                    .amount("0.50");
+                    .amount("0.50")
+                    .idempotencyKey(idempotencyUuid);
             RefundResponse refundResponse = api.refund(storeId, orderId, refund);
             assertNotNull(refundResponse);
             System.out.println(refundResponse);
