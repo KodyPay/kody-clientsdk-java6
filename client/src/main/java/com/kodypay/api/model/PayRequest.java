@@ -18,7 +18,13 @@ public class PayRequest {
   private PaymentMethod paymentMethod = null;
 
   @JsonProperty("orderId")
-  private UUID orderId = null;
+  private String orderId = null;
+
+  @JsonProperty("paymentReference")
+  private String paymentReference = null;
+
+  @JsonProperty("idempotencyUuid")
+  private UUID idempotencyUuid = null;
 
    /**
    * Get amount
@@ -57,15 +63,42 @@ public class PayRequest {
   }
 
   /**
-   * Get order ID (idempotency key)
+   * Get order ID (can be used as idempotency key)
    * @return orderId
    **/
-  public UUID getOrderId() {
+  public String getOrderId() {
     return orderId;
   }
 
-  public void setOrderId(UUID orderId) {
+  public void setOrderId(String orderId) {
     this.orderId = orderId;
+  }
+  public void setOrderId(UUID orderId) {
+    this.orderId = orderId.toString();
+  }
+
+  /**
+   * Get payment reference
+   * @return paymentReference
+   **/
+  public String getPaymentReference() {
+    return paymentReference;
+  }
+
+  public void setPaymentReference(String paymentReference) {
+    this.paymentReference = paymentReference;
+  }
+
+  /**
+   * Get idempotency key (UUID)
+   * @return idempotencyUuid
+   **/
+  public UUID getIdempotencyUuid() {
+    return idempotencyUuid;
+  }
+
+  public void setIdempotencyUuid(UUID idempotencyUuid) {
+    this.idempotencyUuid = idempotencyUuid;
   }
 
   public PayRequest amount(String amount) {
@@ -83,8 +116,18 @@ public class PayRequest {
     return this;
   }
 
-  public PayRequest orderId(UUID orderId) {
+  public PayRequest orderId(String orderId) {
     this.orderId = orderId;
+    return this;
+  }
+
+  public PayRequest orderId(UUID orderId) {
+    this.orderId = orderId.toString();
+    return this;
+  }
+
+  public PayRequest idempotencyUuid(UUID idempotencyUuid) {
+    this.idempotencyUuid = idempotencyUuid;
     return this;
   }
 
