@@ -26,10 +26,13 @@ public class PayRequest {
   @JsonProperty("idempotencyUuid")
   private UUID idempotencyUuid = null;
 
-   /**
+  @JsonProperty("paymentSettings")
+  private PaymentSettings paymentSettings = null;
+
+  /**
    * Get amount
    * @return amount
-  **/
+   **/
   public String getAmount() {
     return amount;
   }
@@ -38,10 +41,10 @@ public class PayRequest {
     this.amount = amount;
   }
 
-   /**
+  /**
    * Get showTips
    * @return showTips
-  **/
+   **/
   public Boolean isShowTips() {
     return showTips;
   }
@@ -73,6 +76,7 @@ public class PayRequest {
   public void setOrderId(String orderId) {
     this.orderId = orderId;
   }
+
   public void setOrderId(UUID orderId) {
     this.orderId = orderId.toString();
   }
@@ -99,6 +103,18 @@ public class PayRequest {
 
   public void setIdempotencyUuid(UUID idempotencyUuid) {
     this.idempotencyUuid = idempotencyUuid;
+  }
+
+  /**
+   * Get paymentSettings
+   * @return paymentSettings
+   **/
+  public PaymentSettings getPaymentSettings() {
+    return paymentSettings;
+  }
+
+  public void setPaymentSettings(PaymentSettings paymentSettings) {
+    this.paymentSettings = paymentSettings;
   }
 
   public PayRequest amount(String amount) {
@@ -131,6 +147,11 @@ public class PayRequest {
     return this;
   }
 
+  public PayRequest paymentSettings(PaymentSettings paymentSettings) {
+    this.paymentSettings = paymentSettings;
+    return this;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -141,8 +162,9 @@ public class PayRequest {
     }
     PayRequest payRequest = (PayRequest) o;
     return Objects.equals(this.amount, payRequest.amount) &&
-        Objects.equals(this.showTips, payRequest.showTips) &&
-        Objects.equals(this.orderId, payRequest.orderId);
+            Objects.equals(this.showTips, payRequest.showTips) &&
+            Objects.equals(this.orderId, payRequest.orderId) &&
+            Objects.equals(this.paymentSettings, payRequest.paymentSettings);
   }
 
   @Override
@@ -151,18 +173,19 @@ public class PayRequest {
     result = 31 * result + (this.amount == null ? 0: this.amount.hashCode());
     result = 31 * result + (this.showTips == null ? 0: this.showTips.hashCode());
     result = 31 * result + (this.orderId == null ? 0: this.orderId.hashCode());
+    result = 31 * result + (this.paymentSettings == null ? 0: this.paymentSettings.hashCode());
     return result;
   }
-
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PayRequest {\n");
-    
+
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
     sb.append("    showTips: ").append(toIndentedString(showTips)).append("\n");
     sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
+    sb.append("    paymentSettings: ").append(toIndentedString(paymentSettings)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -177,6 +200,4 @@ public class PayRequest {
     }
     return o.toString().replace("\n", "\n    ");
   }
-
 }
-
