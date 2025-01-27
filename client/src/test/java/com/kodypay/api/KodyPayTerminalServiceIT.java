@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -83,6 +84,11 @@ public class KodyPayTerminalServiceIT {
                 .showTips(false)
                 .paymentMethod(paymentMethod)
                 .idempotencyUuid(idempotencyUuid);
+
+        List<String> acceptsOnlyList = new ArrayList<String>();
+        acceptsOnlyList.add("MASTERCARD");
+        acceptsOnlyList.add("VISA");
+        pay.setAcceptsOnly(acceptsOnlyList);
 
         PayResponse payResponse = api.pay(storeId, terminalId, pay);
 

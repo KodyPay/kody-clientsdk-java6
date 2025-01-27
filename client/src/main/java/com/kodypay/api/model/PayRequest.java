@@ -2,6 +2,7 @@ package com.kodypay.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,6 +26,9 @@ public class PayRequest {
 
   @JsonProperty("idempotencyUuid")
   private UUID idempotencyUuid = null;
+
+  @JsonProperty("acceptsOnly")
+  private List<String> acceptsOnly;
 
    /**
    * Get amount
@@ -101,6 +105,18 @@ public class PayRequest {
     this.idempotencyUuid = idempotencyUuid;
   }
 
+  /**
+   * Get acceptsOnly
+   * @return acceptsOnly
+   */
+  public List<String> getAcceptsOnly() {
+    return acceptsOnly;
+  }
+
+  public void setAcceptsOnly(List<String> acceptsOnly) {
+    this.acceptsOnly = acceptsOnly;
+  }
+
   public PayRequest amount(String amount) {
     this.amount = amount;
     return this;
@@ -128,6 +144,11 @@ public class PayRequest {
 
   public PayRequest idempotencyUuid(UUID idempotencyUuid) {
     this.idempotencyUuid = idempotencyUuid;
+    return this;
+  }
+
+  public PayRequest acceptsOnly(List<String> acceptsOnly) {
+    this.acceptsOnly = acceptsOnly;
     return this;
   }
 
@@ -163,6 +184,11 @@ public class PayRequest {
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
     sb.append("    showTips: ").append(toIndentedString(showTips)).append("\n");
     sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
+    sb.append("    paymentMethod: ").append(toIndentedString(paymentMethod)).append("\n");
+    sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
+    sb.append("    idempotencyUuid: ").append(toIndentedString(idempotencyUuid)).append("\n");
+    sb.append("    acceptsOnly: ").append(toIndentedString(acceptsOnly)).append("\n");
+
     sb.append("}");
     return sb.toString();
   }
