@@ -1,7 +1,10 @@
 package com.kodypay.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,8 +30,48 @@ public class PayRequest {
   @JsonProperty("idempotencyUuid")
   private UUID idempotencyUuid = null;
 
+  public enum PaymentMethods {
+    VISA("VISA"),
+    MASTERCARD("MASTERCARD"),
+    AMEX("AMEX"),
+    BAN_CONTACT("BAN_CONTACT"),
+    CHINA_UNION_PAY("CHINA_UNION_PAY"),
+    MAESTRO("MAESTRO"),
+    DINERS("DINERS"),
+    DISCOVER("DISCOVER"),
+    JCB("JCB"),
+    ALIPAY("ALIPAY"),
+    WECHAT("WECHAT");
+
+    private final String value;
+
+    PaymentMethods(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static PaymentMethods fromValue(String value) {
+      for (PaymentMethods b : PaymentMethods.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
   @JsonProperty("acceptsOnly")
-  private List<String> acceptsOnly;
+  private List<PaymentMethods> acceptsOnly;
 
    /**
    * Get amount
@@ -109,11 +152,11 @@ public class PayRequest {
    * Get acceptsOnly
    * @return acceptsOnly
    */
-  public List<String> getAcceptsOnly() {
+  public List<PaymentMethods> getAcceptsOnly() {
     return acceptsOnly;
   }
 
-  public void setAcceptsOnly(List<String> acceptsOnly) {
+  public void setAcceptsOnly(List<PaymentMethods> acceptsOnly) {
     this.acceptsOnly = acceptsOnly;
   }
 
@@ -147,7 +190,19 @@ public class PayRequest {
     return this;
   }
 
-  public PayRequest acceptsOnly(List<String> acceptsOnly) {
+  public PayRequest addAcceptsOnly(PaymentMethods acceptsOnly) {
+    if (acceptsOnly == null) {
+      throw new NullPointerException();
+    }
+
+    if (this.acceptsOnly == null) {
+      this.acceptsOnly = new ArrayList<PaymentMethods>();
+    }
+    this.acceptsOnly.add(acceptsOnly);
+    return this;
+  }
+
+  public PayRequest acceptsOnly(List<PaymentMethods> acceptsOnly) {
     this.acceptsOnly = acceptsOnly;
     return this;
   }
@@ -205,4 +260,3 @@ public class PayRequest {
   }
 
 }
-

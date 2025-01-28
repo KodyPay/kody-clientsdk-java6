@@ -83,12 +83,9 @@ public class KodyPayTerminalServiceIT {
                 .amount(amountStr)
                 .showTips(false)
                 .paymentMethod(paymentMethod)
-                .idempotencyUuid(idempotencyUuid);
-
-        List<String> acceptsOnlyList = new ArrayList<String>();
-        acceptsOnlyList.add("MASTERCARD");
-        acceptsOnlyList.add("VISA");
-        pay.setAcceptsOnly(acceptsOnlyList);
+                .idempotencyUuid(idempotencyUuid)
+                .addAcceptsOnly(PayRequest.PaymentMethods.VISA)
+                .addAcceptsOnly(PayRequest.PaymentMethods.AMEX);
 
         PayResponse payResponse = api.pay(storeId, terminalId, pay);
 
