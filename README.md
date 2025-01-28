@@ -157,10 +157,26 @@ This screen can be closed (by tapping the `X` icon) to access other terminal fea
 #### PayRequest - Payment Request
 ```java
 public class PayRequest {
-    private String amount = null;
-    private Boolean showTips = null;
-    private PaymentMethod paymentMethod = null;
-    private UUID orderId = null;
+  private String amount = null;
+  private Boolean showTips = null;
+  private PaymentMethod paymentMethod = null;
+  private UUID orderId = null;
+  private String paymentReference = null;
+  private List<PaymentMethods> acceptsOnly = null;
+
+  public enum PaymentMethods {
+    VISA("VISA"),
+    MASTERCARD("MASTERCARD"),
+    AMEX("AMEX"),
+    BAN_CONTACT("BAN_CONTACT"),
+    CHINA_UNION_PAY("CHINA_UNION_PAY"),
+    MAESTRO("MAESTRO"),
+    DINERS("DINERS"),
+    DISCOVER("DISCOVER"),
+    JCB("JCB"),
+    ALIPAY("ALIPAY"),
+    WECHAT("WECHAT")
+  }
 }
 
 public class PaymentMethod {
@@ -169,8 +185,7 @@ public class PaymentMethod {
 
 public enum PaymentMethodType {
   CARD("CARD"),
-  ALIPAY("ALIPAY"),
-  WECHAT("WECHAT")
+  E_WALLET("E_WALLET")
 }
 
 String storeId = "UUID of assigned store";

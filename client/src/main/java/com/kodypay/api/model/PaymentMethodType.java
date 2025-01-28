@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Gets or Sets PaymentStatus
+ * Gets or Sets public enum PaymentMethodType
  */
 public enum PaymentMethodType {
   CARD("CARD"),

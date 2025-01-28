@@ -9,6 +9,9 @@ public class PaymentMethod {
   @JsonProperty("paymentMethodType")
   private PaymentMethodType paymentMethodType = null;
 
+  @JsonProperty("activateQrCodeScanner")
+  private Boolean activateQrCodeScanner = null;
+
   /**
    * Get paymentMethodType
    * @return paymentMethodType
@@ -26,6 +29,19 @@ public class PaymentMethod {
     return this;
   }
 
+  public Boolean isActivateQrCodeScanner() {
+    return activateQrCodeScanner;
+  }
+
+  public void setActivateQrCodeScanner(Boolean activateQrCodeScanner) {
+    this.activateQrCodeScanner = activateQrCodeScanner;
+  }
+
+  public PaymentMethod activateQrCodeScanner(Boolean activateQrCodeScanner) {
+    setActivateQrCodeScanner(activateQrCodeScanner);
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -35,23 +51,26 @@ public class PaymentMethod {
       return false;
     }
     PaymentMethod paymentMethod = (PaymentMethod) o;
-    return Objects.equals(this.paymentMethodType, paymentMethod.paymentMethodType);
+    return Objects.equals(this.paymentMethodType, paymentMethod.paymentMethodType) &&
+            Objects.equals(this.activateQrCodeScanner, paymentMethod.activateQrCodeScanner);
   }
 
   @Override
   public int hashCode() {
     int result = 17;
     result = 31 * result + (this.paymentMethodType == null ? 0: this.paymentMethodType.hashCode());
+    result = 31 * result + (this.activateQrCodeScanner == null ? 0: this.activateQrCodeScanner.hashCode());
     return result;
   }
-
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PaymentMethod {\n");
-    
+
     sb.append("    paymentMethodType: ").append(toIndentedString(paymentMethodType)).append("\n");
+    sb.append("    activateQrCodeScanner: ").append(toIndentedString(activateQrCodeScanner)).append("\n");
+
     sb.append("}");
     return sb.toString();
   }
@@ -66,6 +85,4 @@ public class PaymentMethod {
     }
     return o.toString().replace("\n", "\n    ");
   }
-
 }
-

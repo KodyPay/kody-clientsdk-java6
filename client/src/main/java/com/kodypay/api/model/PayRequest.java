@@ -1,7 +1,11 @@
 package com.kodypay.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,6 +29,49 @@ public class PayRequest {
 
   @JsonProperty("idempotencyUuid")
   private UUID idempotencyUuid = null;
+
+  public enum PaymentMethods {
+    VISA("VISA"),
+    MASTERCARD("MASTERCARD"),
+    AMEX("AMEX"),
+    BAN_CONTACT("BAN_CONTACT"),
+    CHINA_UNION_PAY("CHINA_UNION_PAY"),
+    MAESTRO("MAESTRO"),
+    DINERS("DINERS"),
+    DISCOVER("DISCOVER"),
+    JCB("JCB"),
+    ALIPAY("ALIPAY"),
+    WECHAT("WECHAT");
+
+    private final String value;
+
+    PaymentMethods(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static PaymentMethods fromValue(String value) {
+      for (PaymentMethods b : PaymentMethods.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      return null;
+    }
+  }
+
+  @JsonProperty("acceptsOnly")
+  private List<PaymentMethods> acceptsOnly;
 
    /**
    * Get amount
@@ -101,6 +148,18 @@ public class PayRequest {
     this.idempotencyUuid = idempotencyUuid;
   }
 
+  /**
+   * Get acceptsOnly
+   * @return acceptsOnly
+   */
+  public List<PaymentMethods> getAcceptsOnly() {
+    return acceptsOnly;
+  }
+
+  public void setAcceptsOnly(List<PaymentMethods> acceptsOnly) {
+    this.acceptsOnly = acceptsOnly;
+  }
+
   public PayRequest amount(String amount) {
     this.amount = amount;
     return this;
@@ -128,6 +187,23 @@ public class PayRequest {
 
   public PayRequest idempotencyUuid(UUID idempotencyUuid) {
     this.idempotencyUuid = idempotencyUuid;
+    return this;
+  }
+
+  public PayRequest addAcceptsOnly(PaymentMethods acceptsOnly) {
+    if (acceptsOnly == null) {
+      throw new NullPointerException();
+    }
+
+    if (this.acceptsOnly == null) {
+      this.acceptsOnly = new ArrayList<PaymentMethods>();
+    }
+    this.acceptsOnly.add(acceptsOnly);
+    return this;
+  }
+
+  public PayRequest acceptsOnly(List<PaymentMethods> acceptsOnly) {
+    this.acceptsOnly = acceptsOnly;
     return this;
   }
 
@@ -163,6 +239,11 @@ public class PayRequest {
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
     sb.append("    showTips: ").append(toIndentedString(showTips)).append("\n");
     sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
+    sb.append("    paymentMethod: ").append(toIndentedString(paymentMethod)).append("\n");
+    sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
+    sb.append("    idempotencyUuid: ").append(toIndentedString(idempotencyUuid)).append("\n");
+    sb.append("    acceptsOnly: ").append(toIndentedString(acceptsOnly)).append("\n");
+
     sb.append("}");
     return sb.toString();
   }
@@ -179,4 +260,3 @@ public class PayRequest {
   }
 
 }
-
