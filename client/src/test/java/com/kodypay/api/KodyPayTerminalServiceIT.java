@@ -71,12 +71,13 @@ public class KodyPayTerminalServiceIT {
     }
 
     @Test
-    public void payTest() throws ApiException, InterruptedException {
+    public void payCardTest() throws ApiException, InterruptedException {
         BigDecimal amount = new BigDecimal("1");
         String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
         assertEquals("1.00", amountStr);
 
-        PaymentMethod paymentMethod = new PaymentMethod().paymentMethodType(PaymentMethodType.CARD);
+        PaymentMethod paymentMethod = new PaymentMethod()
+                .paymentMethodType(PaymentMethodType.CARD);
 
         UUID idempotencyUuid = UUID.randomUUID();
         PayRequest pay = new PayRequest()
@@ -86,6 +87,50 @@ public class KodyPayTerminalServiceIT {
                 .idempotencyUuid(idempotencyUuid)
                 .addAcceptsOnly(PayRequest.PaymentMethods.VISA)
                 .addAcceptsOnly(PayRequest.PaymentMethods.AMEX);
+
+        PayResponse payResponse = api.pay(storeId, terminalId, pay);
+
+        assertNotNull(payResponse);
+        System.out.println(payResponse);
+        String orderId = payResponse.getOrderId();
+
+        if (payResponse.getStatus() == PaymentStatus.PENDING) {
+            for (int i = 0; i < 10; i++) {
+                System.out.println("Waiting for payment to complete..." + orderId);
+                Thread.sleep(2000);
+                PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
+
+                assertNotNull(detailsResponse);
+                System.out.println(detailsResponse);
+                if (detailsResponse.getStatus() != PaymentStatus.PENDING) {
+                    break;
+                }
+            }
+        }
+        System.out.println("Getting final payment details..." + orderId);
+        Thread.sleep(10000);
+        PayResponse detailsResponse = api.paymentDetails(storeId, orderId);
+
+        assertNotNull(detailsResponse);
+        System.out.println(detailsResponse);
+    }
+
+    @Test
+    public void payQrCodeTest() throws ApiException, InterruptedException {
+        BigDecimal amount = new BigDecimal("1");
+        String amountStr = String.format("%.2f", amount.setScale(2, RoundingMode.HALF_UP));
+        assertEquals("1.00", amountStr);
+
+        PaymentMethod paymentMethod = new PaymentMethod()
+                .paymentMethodType(PaymentMethodType.ALIPAY)
+                .activateQrCodeScanner(true);
+
+        UUID idempotencyUuid = UUID.randomUUID();
+        PayRequest pay = new PayRequest()
+                .amount(amountStr)
+                .showTips(false)
+                .paymentMethod(paymentMethod)
+                .idempotencyUuid(idempotencyUuid);
 
         PayResponse payResponse = api.pay(storeId, terminalId, pay);
 
