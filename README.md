@@ -42,7 +42,7 @@ Install the Kody Java6 Client SDK using the following Maven snippet:
 <dependency>
     <groupId>com.kodypay.api</groupId>
     <artifactId>kody-clientsdk-java6</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.8</version>
 </dependency>
 ```
 The library can also be downloaded from [here](https://central.sonatype.com/artifact/com.kodypay.api/kody-clientsdk-java6/overview).
@@ -162,6 +162,7 @@ public class PayRequest {
   private PaymentMethod paymentMethod = null;
   private UUID orderId = null;
   private String paymentReference = null;
+  private String idempotencyUuid = null;
   private List<PaymentMethods> acceptsOnly = null;
 
   public enum PaymentMethods {
@@ -181,6 +182,7 @@ public class PayRequest {
 
 public class PaymentMethod {
   private PaymentMethodType paymentMethodType = null;
+  private Boolean activateQrCodeScanner = null;
 }
 
 public enum PaymentMethodType {
@@ -199,9 +201,11 @@ Request parameters:
 - `amount` - amount as a 2.dp decimal number, such as `"1.00"`
 - `showTips` - (optional) whether to show (true) or hide (false) the tip options. Default is (false)
 - `paymentMethod` - (optional) Settings to enable going straight to QR scanning
-  - `paymentMethodType` - Payment method type: CARD (default), ALIPAY, WECHAT
+  - `paymentMethodType` - (optional) Payment method type: CARD (default), E_WALLET
+  - `activateQrCodeScanner` - (optional) true to scan customer QR code, false to display QR code for customer scanning
 - `orderId` - unique order id (UUID) sent in request to prevent duplicate payments (if sent by client, the same `orderId` is returned by server)
-
+- `idempotencyUuid` - (optional) UUID for idempotency
+- `acceptsOnly` - (optional) List of accepted payment methods. If empty, all methods accepted
 
 #### PayResponse : Payment Response
 
@@ -239,12 +243,20 @@ String storeId = "UUID of assigned store"; // STORE_ID
 String terminalId = "Terminal serial number";
 String amount = "1.00";
 boolean showTips = false;
-UUID orderId = UUID.randomUUID(); // used as idempotency key
+UUID idempotencyUuid = UUID.randomUUID(); // used as idempotency key
+
+PaymentMethod paymentMethod = new PaymentMethod()
+        .paymentMethodType(PaymentMethodType.E_WALLET)
+        .activateQrCodeScanner(true);
 
 PayRequest pay = new PayRequest()
         .amount(amount)
+        .paymentMethod(paymentMethod)
         .showTips(showTips)
-        .orderId(orderId);
+        .idempotencyUuid(idempotencyUuid)
+        .addAcceptsOnly(PayRequest.PaymentMethods.VISA)
+        .addAcceptsOnly(PayRequest.PaymentMethods.AMEX);
+
 PayResponse response = api.pay(storeId, terminalId, pay);
 
 // Note: the response will be returned with a PENDING payment status
