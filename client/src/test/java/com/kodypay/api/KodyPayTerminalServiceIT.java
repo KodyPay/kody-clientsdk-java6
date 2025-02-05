@@ -122,7 +122,7 @@ public class KodyPayTerminalServiceIT {
         assertEquals("1.00", amountStr);
 
         PaymentMethod paymentMethod = new PaymentMethod()
-                .paymentMethodType(PaymentMethodType.ALIPAY)
+                .paymentMethodType(PaymentMethodType.E_WALLET)
                 .activateQrCodeScanner(true);
 
         UUID idempotencyUuid = UUID.randomUUID();
