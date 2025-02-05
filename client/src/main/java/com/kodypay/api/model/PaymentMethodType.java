@@ -8,8 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum PaymentMethodType {
   CARD("CARD"),
-  ALIPAY("ALIPAY"),
-  WECHAT("WECHAT");
+  E_WALLET("E_WALLET");
 
   private final String value;
 
@@ -37,4 +36,3 @@ public enum PaymentMethodType {
     return null;
   }
 }
-
